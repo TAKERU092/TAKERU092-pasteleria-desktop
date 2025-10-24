@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.pasteleria.desktop.controller.DashboardController"
+      spacing="10">
+  <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+  <children>
+
+    <!-- Barra superior: título + búsqueda + refrescar -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <children>
+        <Label text="Dashboard – Clientes" style="-fx-font-size:18; -fx-font-weight:bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="txtBuscar"
+                   promptText="Buscar nombre, apellido, email o teléfono"
+                   prefWidth="320"/>
+        <Button fx:id="btnBuscar" text="Buscar" onAction="#buscar"/>
+        <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar"/>
+      </children>
+    </HBox>
+
+    <!-- Tarjetas KPI -->
+    <HBox spacing="12" alignment="CENTER_LEFT">
+      <children>
+        <TitledPane fx:id="kpiTotal" text="Total clientes" expanded="true">
+          <content>
+            <Label fx:id="lblTotal" style="-fx-font-size:20; -fx-font-weight:bold;"/>
+          </content>
+        </TitledPane>
+        <TitledPane text="Página" expanded="true">
+          <content>
+            <Label fx:id="lblPagina" style="-fx-font-size:20; -fx-font-weight:bold;"/>
+          </content>
+        </TitledPane>
+        <TitledPane text="Filtro" expanded="true">
+          <content>
+            <Label fx:id="lblFiltro" style="-fx-font-size:14;"/>
+          </content>
+        </TitledPane>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnExport" text="Exportar CSV" onAction="#exportarCSV"/>
+      </children>
+    </HBox>
+
+    <!-- Tabla con overlay de carga -->
+    <StackPane VBox.vgrow="ALWAYS">
+      <children>
+
+        <TableView fx:id="tblClientes" prefHeight="520">
+          <columns>
+            <TableColumn fx:id="colNombre"    text="Nombre"     prefWidth="220"/>
+            <TableColumn fx:id="colEmail"     text="Email"      prefWidth="240"/>
+            <TableColumn fx:id="colTelefono"  text="Teléfono"   prefWidth="140"/>
+            <TableColumn fx:id="colDireccion" text="Dirección (Distrito + Dirección + Referencia)" prefWidth="460"/>
+          </columns>
+          <placeholder>
+            <Label text="Sin resultados. Ajusta el filtro y vuelve a buscar."/>
+          </placeholder>
+        </TableView>
+
+        <!-- Overlay: bloquea clics cuando loader.visible = true -->
+        <Region style="-fx-background-color: rgba(0,0,0,0.06);"
+                visible="${loader.visible}"
+                mouseTransparent="false"/>
+
+        <ProgressIndicator fx:id="loader"
+                           visible="false"
+                           maxWidth="80" maxHeight="80"
+                           StackPane.alignment="CENTER"/>
+      </children>
+    </StackPane>
+
+    <!-- Paginación -->
+    <HBox spacing="8" alignment="CENTER_RIGHT">
+      <children>
+        <Label fx:id="lblRango" text="Mostrando —"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnPrev" text="Anterior" onAction="#paginaAnterior"/>
+        <Button fx:id="btnNext" text="Siguiente" onAction="#paginaSiguiente"/>
+      </children>
+    </HBox>
+
+  </children>
+</VBox>

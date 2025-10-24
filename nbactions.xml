@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<root>
+    <actions>
+  <action>
+    <actionName>run</actionName>
+    <goals>
+      <goal>javafx:run</goal>
+    </goals>
+  </action>
+
+  <action>
+    <actionName>debug</actionName>
+    <goals>
+      <goal>javafx:run</goal>
+    </goals>
+    <properties>
+      <jpda.listen>true</jpda.listen>
+    </properties>
+  </action>
+
+  <action>
+    <actionName>profile</actionName>
+    <goals>
+      <goal>javafx:run</goal>
+    </goals>
+  </action>
+</actions>
+
+</root>
+

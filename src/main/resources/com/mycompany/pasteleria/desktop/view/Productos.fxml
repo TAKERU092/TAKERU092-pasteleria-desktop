@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.pasteleria.desktop.controller.ProductosController"
+      spacing="10">
+  <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+  <children>
+    <!-- Barra superior -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <children>
+        <Label text="Productos" style="-fx-font-size:18; -fx-font-weight:bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="txtBuscar" promptText="Buscar por nombre o categoría..." prefWidth="300"/>
+        <Button fx:id="btnBuscar" text="Buscar" onAction="#buscar"/>
+        <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar"/>
+        <Button fx:id="btnNuevo" text="Nuevo" onAction="#nuevo"/>
+      </children>
+    </HBox>
+
+    <!-- Tabla + loader centrado -->
+    <StackPane VBox.vgrow="ALWAYS">
+      <children>
+        <TableView fx:id="tbl" prefHeight="520">
+          <columns>
+            <TableColumn fx:id="colId"         text="ID"          prefWidth="80"/>
+            <TableColumn fx:id="colNombre"     text="Nombre"      prefWidth="220"/>
+            <TableColumn fx:id="colCategoria"  text="Categoría"   prefWidth="180"/>
+            <TableColumn fx:id="colPrecio"     text="Precio"      prefWidth="110"/>
+            <TableColumn fx:id="colStock"      text="Stock"       prefWidth="90"/>
+            <TableColumn fx:id="colEstado"     text="Estado"      prefWidth="110"/>
+            <TableColumn fx:id="colDesc"       text="Descripción" prefWidth="360"/>
+          </columns>
+          <placeholder><Label text="Sin productos."/></placeholder>
+        </TableView>
+
+        <ProgressIndicator fx:id="loader" visible="false" maxWidth="80" maxHeight="80" StackPane.alignment="CENTER"/>
+      </children>
+    </StackPane>
+
+    <!-- Acciones -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <children>
+        <Button fx:id="btnPrecio"   text="Editar precio"   onAction="#editarPrecio"/>
+        <Button fx:id="btnStock"    text="Editar stock"    onAction="#editarStock"/>
+        <Button fx:id="btnEstado"   text="Cambiar estado"  onAction="#cambiarEstado"/>
+        <Button fx:id="btnImagenes" text="Imágenes..."     onAction="#gestionarImagenes"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnExport"   text="Exportar CSV"    onAction="#exportarCSV"/>
+      </children>
+    </HBox>
+  </children>
+</VBox>

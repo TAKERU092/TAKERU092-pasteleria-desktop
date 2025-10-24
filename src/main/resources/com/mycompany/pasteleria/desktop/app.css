@@ -1,0 +1,263 @@
+/**************************************************************
+ * Pastelería Artia – Ica
+ * JavaFX app.css
+ * Ruta sugerida: src/main/resources/com/mycompany/pasteleria/desktop/app.css
+ **************************************************************/
+
+/* ============ PALETA (ajusta estos valores si lo deseas) ============ */
+.root {
+  /* Colores marca */
+  -color-primary:        #D92E7F;   /* frambuesa */
+  -color-primary-700:    #B32369;
+  -color-primary-100:    #FCE9F1;
+
+  -color-accent:         #5C3D2E;   /* chocolate */
+  -color-accent-600:     #4A3024;
+
+  -color-bg:             #FFF7F9;   /* crema rosado muy claro */
+  -color-surface:        #FFFFFF;
+  -color-border:         #E5E7EB;
+
+  -color-text:           #1F2937;   /* gris carbón */
+  -color-text-muted:     #6B7280;
+
+  /* Feedback */
+  -color-success:        #2EB872;
+  -color-info:           #3B82F6;
+  -color-warning:        #F59E0B;
+  -color-danger:         #EF4444;
+
+  /* Tipografía base */
+  -fx-font-size: 13px;
+  -fx-font-family: "Segoe UI", "Roboto", "Inter", "Arial";
+  -fx-text-fill: -color-text;
+  -fx-background: -color-bg;
+}
+
+/* ============ CONTENEDORES PRINCIPALES ============ */
+.topbar {
+  -fx-background-color: linear-gradient(to bottom, derive(-color-accent, 20%), -color-accent);
+  -fx-padding: 8 12 8 12;
+  -fx-alignment: center-left;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.1, 0, 2);
+}
+.title {
+  -fx-text-fill: white;
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+}
+
+.sidebar {
+  -fx-background-color: -color-surface;
+  -fx-border-color: -color-border;
+  -fx-border-width: 0 1 0 0;
+}
+.section {
+  -fx-text-fill: -color-text-muted;
+  -fx-font-size: 11px;
+  -fx-padding: 6 0 0 2;
+}
+
+.content {
+  -fx-background-color: -color-surface;
+  -fx-background-radius: 10;
+  -fx-padding: 8;
+}
+
+/* ============ BOTONES (GENÉRICOS) ============ */
+.button {
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+  -fx-padding: 7 12 7 12;
+  -fx-background-color: -color-primary;
+  -fx-text-fill: white;
+  -fx-cursor: hand;
+}
+.button:hover {
+  -fx-background-color: -color-primary-700;
+}
+.button:pressed {
+  -fx-background-color: derive(-color-primary, -15%);
+}
+.button:disabled {
+  -fx-opacity: 0.55;
+}
+
+/* Topbar buttons (secundarios) */
+.topbtn {
+  -fx-background-color: transparent;
+  -fx-text-fill: rgba(255,255,255,0.92);
+  -fx-padding: 6 10 6 10;
+  -fx-background-radius: 6;
+  -fx-border-radius: 6;
+}
+.topbtn:hover {
+  -fx-background-color: rgba(255,255,255,0.12);
+}
+.topbtn.active {
+  -fx-background-color: rgba(255,255,255,0.22);
+  -fx-text-fill: #fff;
+}
+
+/* Sidebar nav (ToggleButtons) */
+.navbtn {
+  -fx-background-color: transparent;
+  -fx-text-fill: -color-text;
+  -fx-alignment: CENTER_LEFT;
+  -fx-padding: 8 10 8 10;
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+}
+.navbtn:hover {
+  -fx-background-color: rgba(217,46,127,0.10); /* primario 10% */
+}
+.navbtn:selected {
+  -fx-background-color: -color-primary;
+  -fx-text-fill: white;
+}
+
+/* Botones “estado” (opcional, si asignas styleClass en FXML o en celdas) */
+.btn-success { -fx-background-color: -color-success; }
+.btn-info    { -fx-background-color: -color-info; }
+.btn-warn    { -fx-background-color: -color-warning; }
+.btn-danger  { -fx-background-color: -color-danger; }
+.btn-success:hover { -fx-background-color: derive(-color-success, -10%); }
+.btn-info:hover    { -fx-background-color: derive(-color-info, -10%); }
+.btn-warn:hover    { -fx-background-color: derive(-color-warning, -10%); }
+.btn-danger:hover  { -fx-background-color: derive(-color-danger, -10%); }
+
+/* ============ CAMPOS DE FORMULARIO ============ */
+.text-field, .combo-box-base {
+  -fx-background-color: -color-surface, -color-surface, -color-surface;
+  -fx-background-insets: 0, 1, 2;
+  -fx-background-radius: 8, 8, 8;
+  -fx-padding: 6 10 6 10;
+  -fx-border-color: -color-border;
+  -fx-border-radius: 8;
+}
+.text-field:focused, .combo-box-base:focused {
+  -fx-border-color: -color-primary;
+  -fx-effect: dropshadow(gaussian, rgba(217,46,127,0.15), 8, 0.2, 0, 0);
+}
+.text-field:disabled, .combo-box-base:disabled {
+  -fx-opacity: 0.6;
+}
+
+/* ============ TITLED PANES (KPIs) ============ */
+.titled-pane {
+  -fx-background-color: -color-surface;
+  -fx-border-color: -color-border;
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+}
+.titled-pane > .title {
+  -fx-background-color: -color-primary-100;
+  -fx-background-radius: 10 10 0 0;
+}
+.titled-pane:expanded > .content {
+  -fx-background-insets: 0 0 0 0;
+}
+
+/* ============ TABLEVIEW ============ */
+.table-view {
+  -fx-background-color: -color-surface;
+  -fx-background-radius: 10;
+  -fx-border-color: -color-border;
+  -fx-border-radius: 10;
+  -fx-padding: 2;
+}
+.table-view .placeholder .label {
+  -fx-text-fill: -color-text-muted;
+}
+.table-view .column-header-background {
+  -fx-background-color: #F6F7FB;
+  -fx-background-radius: 10 10 0 0;
+}
+.table-view .column-header, .table-view .filler {
+  -fx-size: 34px;
+  -fx-border-color: -color-border;
+  -fx-border-width: 0 0 1 0;
+}
+.table-view .table-row-cell {
+  -fx-background-color: -color-surface;
+  -fx-cell-size: 34px;
+}
+.table-view .table-row-cell:odd {
+  -fx-background-color: #FAFAFD;
+}
+.table-view .table-row-cell:hover {
+  -fx-background-color: derive(-color-primary-100, 15%);
+}
+.table-view:focused .table-row-cell:filled:focused, 
+.table-view:focused .table-row-cell:filled:selected {
+  -fx-background-color: derive(-color-primary, 80%);
+  -fx-text-fill: white;
+}
+.table-column.align-right .label, 
+.table-view .table-cell.align-right {
+  -fx-alignment: CENTER_RIGHT;
+}
+
+/* ============ SCROLLBARS ============ */
+.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+  -fx-background-color: rgba(0,0,0,0.25);
+  -fx-background-radius: 8;
+}
+.scroll-bar:horizontal .track, .scroll-bar:vertical .track {
+  -fx-background-color: transparent;
+}
+
+/* ============ SPLITPANE ============ */
+.split-pane:horizontal > .split-pane-divider, 
+.split-pane:vertical > .split-pane-divider {
+  -fx-background-color: -color-border;
+  -fx-padding: 0.3em;
+}
+
+/* ============ PROGRESS / OVERLAYS ============ */
+.progress-indicator {
+  -fx-progress-color: -color-primary;
+}
+.overlay {
+  -fx-background-color: rgba(0,0,0,0.06);
+}
+
+/* ============ BADGES DE ESTADO (si los aplicas en celdas) ============ */
+/* Úsalos como styleClass en Labels dentro de celdas, p.ej. “badge badge-cocina” */
+.badge {
+  -fx-background-radius: 999;
+  -fx-padding: 2 8 2 8;
+  -fx-text-fill: white;
+  -fx-font-size: 11px;
+  -fx-font-weight: bold;
+}
+.badge-registrado { -fx-background-color: -color-info; }
+.badge-cocina     { -fx-background-color: -color-warning; }
+.badge-cocinando  { -fx-background-color: derive(-color-warning, -15%); }
+.badge-cocinado   { -fx-background-color: -color-primary; }
+.badge-entregado  { -fx-background-color: -color-success; }
+.badge-cancelado  { -fx-background-color: -color-danger; }
+
+/* ============ LABELS, TEXTOS ============ */
+.label { -fx-text-fill: -color-text; }
+.muted { -fx-text-fill: -color-text-muted; }
+
+/* ============ PANELES / REGIONES ============ */
+.region, .pane, .stack-pane, .hbox, .vbox, .border-pane {
+  -fx-background-color: transparent;
+}
+
+/* ============ HERRAMIENTAS DE AYUDA ============ */
+.card {
+  -fx-background-color: -color-surface;
+  -fx-background-radius: 12;
+  -fx-padding: 12;
+  -fx-border-color: -color-border;
+  -fx-border-radius: 12;
+}
+
+/* ============ HOVER FOCUS GENERAL ============ */
+:focused {
+  -fx-focus-color: -color-primary;
+  -fx-faint-focus-color: rgba(217,46,127,0.15);
+}

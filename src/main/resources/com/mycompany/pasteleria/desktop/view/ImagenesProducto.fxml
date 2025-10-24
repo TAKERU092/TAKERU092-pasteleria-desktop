@@ -1,0 +1,42 @@
+<!-- src/main/resources/com/mycompany/pasteleria/desktop/view/ImagenesProducto.fxml -->
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.pasteleria.desktop.controller.ImagenesProductoController"
+      spacing="10">
+  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+
+  <children>
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <children>
+        <Label fx:id="lblTitulo" text="Imágenes" style="-fx-font-size:16; -fx-font-weight:bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <ProgressIndicator fx:id="loader" visible="false" maxWidth="40" maxHeight="40"/>
+      </children>
+    </HBox>
+
+    <TableView fx:id="tbl" prefHeight="360">
+      <columns>
+        <TableColumn fx:id="colOrden" text="Orden" prefWidth="80"/>
+        <TableColumn fx:id="colUrl"   text="URL"   prefWidth="520"/>
+      </columns>
+      <placeholder><Label text="Sin imágenes."/></placeholder>
+    </TableView>
+
+    <HBox spacing="8">
+      <children>
+        <TextField fx:id="txtUrl" promptText="https://..."/>
+        <Button text="Agregar" onAction="#addUrl"/>
+        <Button text="Quitar"  onAction="#removeSelected"/>
+        <Button text="Subir"   onAction="#moveUp"/>
+        <Button text="Bajar"   onAction="#moveDown"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="Guardar cambios" onAction="#guardar"/>
+      </children>
+    </HBox>
+  </children>
+</VBox>

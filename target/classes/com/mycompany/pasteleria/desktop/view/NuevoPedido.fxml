@@ -1,0 +1,54 @@
+<!-- src/main/resources/com/mycompany/pasteleria/desktop/view/NuevoPedido.fxml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.pasteleria.desktop.controller.NuevoPedidoController"
+      spacing="10" styleClass="content">
+  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+
+  <children>
+    <Label text="Nuevo Pedido" style="-fx-font-size:16; -fx-font-weight:bold;"/>
+
+    <GridPane hgap="8" vgap="8">
+      <columnConstraints>
+        <ColumnConstraints percentWidth="30"/>
+        <ColumnConstraints percentWidth="70"/>
+      </columnConstraints>
+      <children>
+        <Label text="ID Cliente:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtIdCliente" promptText="id_cliente" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Fecha entrega (YYYY-MM-DD):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtFechaEnt" promptText="2025-10-24" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Hora entrega (HH:mm):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtHoraEnt" promptText="16:30" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+      </children>
+    </GridPane>
+
+    <Separator/>
+
+    <Label text="Ítems del pedido" style="-fx-font-weight:bold;"/>
+    <TableView fx:id="tblItems" prefHeight="260">
+      <columns>
+        <TableColumn fx:id="colProd"  text="Producto" prefWidth="260"/>
+        <TableColumn fx:id="colCant"  text="Cant."    prefWidth="80"/>
+        <TableColumn fx:id="colPrecio" text="Precio"  prefWidth="120"/>
+        <TableColumn fx:id="colSub"   text="Subtotal" prefWidth="120"/>
+      </columns>
+    </TableView>
+
+    <HBox spacing="8">
+      <children>
+        <Button text="Añadir ítem" onAction="#addItem"/>
+        <Button text="Quitar ítem" onAction="#removeItem"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Label text="Total:"/>
+        <Label fx:id="lblTotal" style="-fx-font-size:16; -fx-font-weight:bold;"/>
+      </children>
+    </HBox>
+  </children>
+</VBox>

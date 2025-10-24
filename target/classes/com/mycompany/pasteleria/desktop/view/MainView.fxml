@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mycompany.pasteleria.desktop.controller.ShellController"
+            prefWidth="1200" prefHeight="720">
+
+  <!-- Top bar -->
+  <top>
+    <HBox spacing="8" styleClass="topbar">
+      <children>
+        <Label fx:id="lblTitle" text="Pastelería" styleClass="title"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <!-- Botones superiores (opcionales) -->
+        <Button text="Clientes" onAction="#showClientes" styleClass="topbtn" mnemonicParsing="false"/>
+        <Button text="Pedidos"  onAction="#showPedidos"  styleClass="topbtn" mnemonicParsing="false"/>
+        <Button text="Cocina"   onAction="#showCocina"   styleClass="topbtn" mnemonicParsing="false"/>
+      </children>
+      <padding>
+        <Insets top="10" right="14" bottom="10" left="14"/>
+      </padding>
+    </HBox>
+  </top>
+
+  <!-- Sidebar con Scroll si la ventana se hace pequeña -->
+  <left>
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+      <content>
+        <VBox spacing="6" styleClass="sidebar" prefWidth="200" minWidth="160" maxWidth="260">
+          <padding><Insets top="16" right="10" bottom="16" left="10"/></padding>
+          <children>
+            <ToggleButton fx:id="btnClientes"   text="Clientes"   onAction="#showClientes"
+                          selected="true" styleClass="navbtn"/>
+            <ToggleButton fx:id="btnPedidos"    text="Pedidos"    onAction="#showPedidos"
+                          styleClass="navbtn"/>
+            <ToggleButton fx:id="btnCocina"     text="Cocina"     onAction="#showCocina"
+                          styleClass="navbtn"/>
+            <ToggleButton fx:id="btnProductos"  text="Productos"  onAction="#showProductos"
+                          styleClass="navbtn"/>
+            <ToggleButton fx:id="btnCategorias" text="Categorías" onAction="#showCategorias"
+                          styleClass="navbtn"/>
+
+            <Separator/>
+            <Label text="Próximamente" styleClass="section"/>
+            <Button text="Reportes" disable="true" styleClass="navbtn" mnemonicParsing="false"/>
+          </children>
+        </VBox>
+      </content>
+    </ScrollPane>
+  </left>
+
+  <!-- Contenido -->
+  <center>
+    <!-- StackPane permite overlays (loaders, diálogos ligeros, etc.) -->
+    <StackPane fx:id="contentPane" styleClass="content">
+      <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+    </StackPane>
+  </center>
+
+</BorderPane>
