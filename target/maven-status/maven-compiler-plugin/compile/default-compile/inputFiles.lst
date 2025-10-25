@@ -3,7 +3,9 @@ C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\CocinaController.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\DashboardController.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\ImagenesProductoController.java
+C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\KDSController.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\NuevoPedidoController.java
+C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\PagosController.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\PedidosController.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\ProductosController.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\controller\ShellController.java
@@ -12,6 +14,7 @@ C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\model\Cliente.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\model\DetallePedido.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\model\ImagenProducto.java
+C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\model\Pago.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\model\Pedido.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\model\Producto.java
 C:\Users\Jose-Julian\Documents\NetBeansProjects\pasteleria-desktop\src\main\java\com\mycompany\pasteleria\desktop\net\ApiClient.java

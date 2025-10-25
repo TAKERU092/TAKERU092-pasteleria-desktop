@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- src/main/resources/com/mycompany/pasteleria/desktop/view/Cocina.fxml -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -7,95 +7,98 @@
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.mycompany.pasteleria.desktop.controller.CocinaController">
 
-  <!-- Contenido principal -->
   <children>
-    <VBox spacing="10">
-      <padding>
-        <Insets top="16" right="16" bottom="16" left="16"/>
-      </padding>
+    <!-- ===================== Contenido principal ===================== -->
+    <VBox spacing="12" fillWidth="true">
+      <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
 
-      <children>
+      <!-- Barra superior -->
+      <HBox spacing="8" alignment="CENTER_LEFT">
+        <children>
+          <Label text="Cocina (KDS)" styleClass="title"/>
+          <Pane HBox.hgrow="ALWAYS"/>
 
-        <!-- Barra superior -->
-        <HBox spacing="8" alignment="CENTER_LEFT">
-          <children>
-            <Label text="Cocina" style="-fx-font-size:18; -fx-font-weight:bold;"/>
-            <Pane HBox.hgrow="ALWAYS"/>
-            <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar"/>
-          </children>
-        </HBox>
+          <!-- Filtro de estado + AutoRefresh (añadidos para calzar con el mock) -->
+          <ComboBox fx:id="cbFiltro" promptText="PENDIENTE / EN_PROCESO / TODOS" prefWidth="240"/>
+          <CheckBox fx:id="chkAutoRefresh" text="AutoRefresh"/>
 
-        <!-- Zona central: pedidos (izq) / detalle (der) -->
-        <SplitPane dividerPositions="0.48">
-          <items>
+          <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar" styleClass="btn-ghost"/>
+        </children>
+      </HBox>
 
-            <!-- Pedidos en proceso -->
-            <VBox spacing="8">
-              <children>
-                <Label text="Pedidos en cocina / cocinando" style="-fx-font-weight:bold;"/>
+      <!-- Zona central: pedidos (izq) / detalle (der) -->
+      <SplitPane dividerPositions="0.50">
+        <items>
 
-                <TableView fx:id="tblPedidos" prefHeight="560" VBox.vgrow="ALWAYS">
-                  <columns>
-                    <TableColumn fx:id="colNum"     text="N°"                      prefWidth="80"/>
-                    <TableColumn fx:id="colCliente" text="Cliente"                 prefWidth="220"/>
-                    <TableColumn fx:id="colEstado"  text="Estado"                  prefWidth="120"/>
-                    <TableColumn fx:id="colEntrega" text="Entrega (Fecha Hora)"    prefWidth="200"/>
-                    <TableColumn fx:id="colTotal"   text="Total"                   prefWidth="100"/>
-                  </columns>
-                  <placeholder>
-                    <Label text="No hay pedidos en cocina por ahora."/>
-                  </placeholder>
-                </TableView>
+          <!-- Pedidos en proceso -->
+          <VBox spacing="8">
+            <children>
+              <Label text="Pedidos en cocina / cocinando" style="-fx-font-weight:600;"/>
 
-                <HBox spacing="8">
-                  <children>
-                    <Label text="Cambiar estado seleccionado:"/>
-                    <Button fx:id="btnCocinando" text="Cocinando" onAction="#toCocinando"/>
-                    <Button fx:id="btnCocinado"  text="Cocinado"  onAction="#toCocinado"/>
-                    <Button fx:id="btnEntregado" text="Entregado" onAction="#toEntregado"/>
-                    <Button fx:id="btnCancelado" text="Cancelado" onAction="#toCancelado"/>
-                  </children>
-                </HBox>
-              </children>
-            </VBox>
+              <TableView fx:id="tblPedidos" prefHeight="560" VBox.vgrow="ALWAYS">
+                <columns>
+                  <TableColumn fx:id="colNum"     text="N°"                      prefWidth="90"  styleClass="align-center"/>
+                  <TableColumn fx:id="colCliente" text="Cliente"                 prefWidth="220"/>
+                  <TableColumn fx:id="colEstado"  text="Estado"                  prefWidth="140" styleClass="align-center"/>
+                  <TableColumn fx:id="colEntrega" text="Entrega (Fecha Hora)"    prefWidth="200"/>
+                  <TableColumn fx:id="colTotal"   text="Total"                   prefWidth="120" styleClass="align-right"/>
+                </columns>
+                <placeholder>
+                  <Label text="No hay pedidos en cocina por ahora."/>
+                </placeholder>
+              </TableView>
 
-            <!-- Detalle del pedido -->
-            <VBox spacing="8">
-              <children>
-                <Label fx:id="lblTituloDetalle" text="Detalle del pedido —" style="-fx-font-weight:bold;"/>
+              <!-- Acciones sobre selección -->
+              <HBox spacing="8" styleClass="toolbar-actions">
+                <children>
+                  <Label text="Cambiar estado seleccionado:" styleClass="label-muted"/>
+                  <Button fx:id="btnCocinando" text="Cocinando" onAction="#toCocinando" styleClass="btn-info"/>
+                  <Button fx:id="btnCocinado"  text="Cocinado"  onAction="#toCocinado"  styleClass="btn-success"/>
+                  <Button fx:id="btnEntregado" text="Entregado" onAction="#toEntregado" styleClass="btn-emerald"/>
+                  <Button fx:id="btnCancelado" text="Cancelado" onAction="#toCancelado" styleClass="btn-danger"/>
+                </children>
+              </HBox>
+            </children>
+          </VBox>
 
-                <TableView fx:id="tblDetalle" prefHeight="520" VBox.vgrow="ALWAYS">
-                  <columns>
-                    <TableColumn fx:id="colProd"   text="Producto"      prefWidth="260"/>
-                    <TableColumn fx:id="colCant"   text="Cant."         prefWidth="80"/>
-                    <TableColumn fx:id="colPrecio" text="Precio Unit."  prefWidth="120"/>
-                    <TableColumn fx:id="colSub"    text="Subtotal"      prefWidth="120"/>
-                  </columns>
-                  <placeholder>
-                    <Label text="Selecciona un pedido para ver el detalle."/>
-                  </placeholder>
-                </TableView>
+          <!-- Detalle del pedido -->
+          <VBox spacing="8">
+            <children>
+              <Label fx:id="lblTituloDetalle" text="Detalle del pedido —" style="-fx-font-weight:600;"/>
 
-                <HBox spacing="12" alignment="CENTER_RIGHT">
-                  <children>
-                    <Label text="Total pedido:"/>
-                    <Label fx:id="lblTotalPedido" style="-fx-font-size:16; -fx-font-weight:bold;"/>
-                  </children>
-                </HBox>
-              </children>
-            </VBox>
+              <TableView fx:id="tblDetalle" prefHeight="520" VBox.vgrow="ALWAYS">
+                <columns>
+                  <TableColumn fx:id="colProd"   text="Producto"      prefWidth="260"/>
+                  <TableColumn fx:id="colCant"   text="Cant."         prefWidth="80"  styleClass="align-center"/>
+                  <TableColumn fx:id="colPrecio" text="Precio Unit."  prefWidth="140" styleClass="align-right"/>
+                  <TableColumn fx:id="colSub"    text="Subtotal"      prefWidth="140" styleClass="align-right"/>
+                </columns>
+                <placeholder>
+                  <Label text="Selecciona un pedido para ver el detalle."/>
+                </placeholder>
+              </TableView>
 
-          </items>
-        </SplitPane>
+              <HBox spacing="12" alignment="CENTER_RIGHT">
+                <children>
+                  <Label text="Total pedido:" class="label-muted"/>
+                  <Label fx:id="lblTotalPedido" style="-fx-font-size:16; -fx-font-weight:700;"/>
+                </children>
+              </HBox>
+            </children>
+          </VBox>
 
-      </children>
+        </items>
+      </SplitPane>
     </VBox>
 
-    <!-- Overlay de carga -->
+    <!-- ===================== Overlay de carga ===================== -->
     <StackPane pickOnBounds="false">
       <children>
-        <Region style="-fx-background-color: rgba(0,0,0,0.08);" visible="${loader.visible}" mouseTransparent="false"/>
-        <ProgressIndicator fx:id="loader" visible="false" maxWidth="80" maxHeight="80"/>
+        <Region styleClass="overlay"
+                visible="${loader.visible}"
+                mouseTransparent="false"/>
+        <ProgressIndicator fx:id="loader" visible="false"
+                           maxWidth="80" maxHeight="80"/>
       </children>
     </StackPane>
   </children>

@@ -1,55 +1,84 @@
+/* ruta: src/main/resources/com/mycompany/pasteleria/desktop/app.css
 /**************************************************************
  * Pastelería Artia – Ica
- * JavaFX app.css
- * Ruta sugerida: src/main/resources/com/mycompany/pasteleria/desktop/app.css
+ * JavaFX app.css (completo, listo para el mock)
  **************************************************************/
 
-/* ============ PALETA (ajusta estos valores si lo deseas) ============ */
+/* =================== PALETA Y TIPOGRAFÍA =================== */
 .root {
-  /* Colores marca */
-  -color-primary:        #D92E7F;   /* frambuesa */
-  -color-primary-700:    #B32369;
-  -color-primary-100:    #FCE9F1;
+  /* Marca */
+  -color-primary:        #DB2777;   /* rosa acento del mock */
+  -color-primary-700:    #B91C60;
+  -color-primary-100:    #FCE9F3;
 
-  -color-accent:         #5C3D2E;   /* chocolate */
-  -color-accent-600:     #4A3024;
+  -color-accent:         #5C3D2E;   /* chocolate (secundario) */
 
-  -color-bg:             #FFF7F9;   /* crema rosado muy claro */
-  -color-surface:        #FFFFFF;
-  -color-border:         #E5E7EB;
+  /* Base UI */
+  -color-bg:             #F8FAFC;   /* fondo general (gris claro del mock) */
+  -color-surface:        #FFFFFF;   /* tarjetas/containers */
+  -color-border:         #E5E7EB;   /* bordes tenues */
 
-  -color-text:           #1F2937;   /* gris carbón */
-  -color-text-muted:     #6B7280;
+  /* Texto */
+  -color-text:           #111827;   /* gris muy oscuro */
+  -color-text-muted:     #6B7280;   /* gris medio */
 
   /* Feedback */
-  -color-success:        #2EB872;
+  -color-success:        #10B981;
   -color-info:           #3B82F6;
   -color-warning:        #F59E0B;
   -color-danger:         #EF4444;
+  -color-sky:            #0EA5E9;
+  -color-emerald:        #059669;
+  -color-purple:         #7C3AED;
 
   /* Tipografía base */
+  -fx-font-family: "Inter", "Segoe UI", "Roboto", "Arial", system-ui, sans-serif;
   -fx-font-size: 13px;
-  -fx-font-family: "Segoe UI", "Roboto", "Inter", "Arial";
   -fx-text-fill: -color-text;
-  -fx-background: -color-bg;
+
+  /* Fondo global */
+  -fx-background-color: -color-bg;
 }
 
-/* ============ CONTENEDORES PRINCIPALES ============ */
+/* =================== HEADER (Topbar) =================== */
+/* El mock usa header blanco con borde inferior tenue */
 .topbar {
-  -fx-background-color: linear-gradient(to bottom, derive(-color-accent, 20%), -color-accent);
-  -fx-padding: 8 12 8 12;
-  -fx-alignment: center-left;
-  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.1, 0, 2);
+  -fx-background-color: -color-surface;
+  -fx-border-color: -color-border transparent -color-border transparent;
+  -fx-border-width: 0 0 1 0;
+  -fx-padding: 10 16 10 16;         /* ~64px alto total con HBox prefHeight=64 */
+  -fx-alignment: CENTER_LEFT;
 }
 .title {
-  -fx-text-fill: white;
-  -fx-font-size: 18px;
-  -fx-font-weight: bold;
+  -fx-text-fill: -color-text;
+  -fx-font-size: 16px;
+  -fx-font-weight: 600;
 }
+.breadcrumb {
+  -fx-text-fill: -color-text-muted;
+  -fx-font-size: 12px;
+  -fx-padding: 0 0 0 12;            /* pequeño espacio tras el título */
+}
+.topmeta {
+  -fx-text-fill: -color-text-muted;
+  -fx-font-size: 12px;
+}
+.topbtn {
+  -fx-background-color: #F3F4F6;
+  -fx-text-fill: -color-text;
+  -fx-background-radius: 12;
+  -fx-padding: 6 12 6 12;
+}
+.topbtn:hover { -fx-background-color: #E5E7EB; }
 
+/* Logo cuadrado redondeado del mock (Rectangle) */
+.logo-accent { -fx-fill: -color-primary; }
+
+/* =================== SIDEBAR =================== */
+.sidebar-scroll { -fx-background-color: transparent; }
 .sidebar {
   -fx-background-color: -color-surface;
-  -fx-border-color: -color-border;
+  -fx-border-color: transparent -color-border transparent transparent;
   -fx-border-width: 0 1 0 0;
 }
 .section {
@@ -57,207 +86,234 @@
   -fx-font-size: 11px;
   -fx-padding: 6 0 0 2;
 }
-
-.content {
-  -fx-background-color: -color-surface;
-  -fx-background-radius: 10;
-  -fx-padding: 8;
-}
-
-/* ============ BOTONES (GENÉRICOS) ============ */
-.button {
-  -fx-background-radius: 8;
-  -fx-border-radius: 8;
-  -fx-padding: 7 12 7 12;
-  -fx-background-color: -color-primary;
-  -fx-text-fill: white;
-  -fx-cursor: hand;
-}
-.button:hover {
-  -fx-background-color: -color-primary-700;
-}
-.button:pressed {
-  -fx-background-color: derive(-color-primary, -15%);
-}
-.button:disabled {
-  -fx-opacity: 0.55;
-}
-
-/* Topbar buttons (secundarios) */
-.topbtn {
-  -fx-background-color: transparent;
-  -fx-text-fill: rgba(255,255,255,0.92);
-  -fx-padding: 6 10 6 10;
-  -fx-background-radius: 6;
-  -fx-border-radius: 6;
-}
-.topbtn:hover {
-  -fx-background-color: rgba(255,255,255,0.12);
-}
-.topbtn.active {
-  -fx-background-color: rgba(255,255,255,0.22);
-  -fx-text-fill: #fff;
-}
-
-/* Sidebar nav (ToggleButtons) */
 .navbtn {
   -fx-background-color: transparent;
   -fx-text-fill: -color-text;
   -fx-alignment: CENTER_LEFT;
-  -fx-padding: 8 10 8 10;
-  -fx-background-radius: 8;
-  -fx-border-radius: 8;
+  -fx-padding: 8 12 8 12;
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
 }
-.navbtn:hover {
-  -fx-background-color: rgba(217,46,127,0.10); /* primario 10% */
-}
+.navbtn:hover { -fx-background-color: #F3F4F6; }
 .navbtn:selected {
   -fx-background-color: -color-primary;
   -fx-text-fill: white;
 }
 
-/* Botones “estado” (opcional, si asignas styleClass en FXML o en celdas) */
+/* =================== CONTENIDO (Wrapper central) =================== */
+.content {
+  -fx-background-color: -color-bg;
+  -fx-padding: 12;
+}
+
+/* =================== COMPONENTES GENÉRICOS =================== */
+.button {
+  -fx-background-color: -color-primary;
+  -fx-text-fill: white;
+  -fx-background-radius: 12;
+  -fx-border-radius: 12;
+  -fx-padding: 7 12 7 12;
+  -fx-cursor: hand;
+}
+.button:hover    { -fx-background-color: -color-primary-700; }
+.button:pressed  { -fx-background-color: derive(-color-primary, -15%); }
+.button:disabled { -fx-opacity: 0.55; }
+
+.btn-ghost {
+  -fx-background-color: #F3F4F6;
+  -fx-text-fill: -color-text;
+}
+.btn-ghost:hover { -fx-background-color: #E5E7EB; }
+
 .btn-success { -fx-background-color: -color-success; }
 .btn-info    { -fx-background-color: -color-info; }
 .btn-warn    { -fx-background-color: -color-warning; }
 .btn-danger  { -fx-background-color: -color-danger; }
+.btn-sky     { -fx-background-color: -color-sky; }
+.btn-emerald { -fx-background-color: -color-emerald; }
+.btn-purple  { -fx-background-color: -color-purple; }
+
 .btn-success:hover { -fx-background-color: derive(-color-success, -10%); }
 .btn-info:hover    { -fx-background-color: derive(-color-info, -10%); }
 .btn-warn:hover    { -fx-background-color: derive(-color-warning, -10%); }
 .btn-danger:hover  { -fx-background-color: derive(-color-danger, -10%); }
+.btn-sky:hover     { -fx-background-color: derive(-color-sky, -10%); }
+.btn-emerald:hover { -fx-background-color: derive(-color-emerald, -10%); }
+.btn-purple:hover  { -fx-background-color: derive(-color-purple, -10%); }
 
-/* ============ CAMPOS DE FORMULARIO ============ */
-.text-field, .combo-box-base {
-  -fx-background-color: -color-surface, -color-surface, -color-surface;
-  -fx-background-insets: 0, 1, 2;
-  -fx-background-radius: 8, 8, 8;
-  -fx-padding: 6 10 6 10;
-  -fx-border-color: -color-border;
-  -fx-border-radius: 8;
-}
-.text-field:focused, .combo-box-base:focused {
-  -fx-border-color: -color-primary;
-  -fx-effect: dropshadow(gaussian, rgba(217,46,127,0.15), 8, 0.2, 0, 0);
-}
-.text-field:disabled, .combo-box-base:disabled {
-  -fx-opacity: 0.6;
-}
-
-/* ============ TITLED PANES (KPIs) ============ */
-.titled-pane {
-  -fx-background-color: -color-surface;
-  -fx-border-color: -color-border;
-  -fx-border-radius: 10;
-  -fx-background-radius: 10;
-}
-.titled-pane > .title {
-  -fx-background-color: -color-primary-100;
-  -fx-background-radius: 10 10 0 0;
-}
-.titled-pane:expanded > .content {
-  -fx-background-insets: 0 0 0 0;
-}
-
-/* ============ TABLEVIEW ============ */
-.table-view {
-  -fx-background-color: -color-surface;
-  -fx-background-radius: 10;
-  -fx-border-color: -color-border;
-  -fx-border-radius: 10;
-  -fx-padding: 2;
-}
-.table-view .placeholder .label {
-  -fx-text-fill: -color-text-muted;
-}
-.table-view .column-header-background {
-  -fx-background-color: #F6F7FB;
-  -fx-background-radius: 10 10 0 0;
-}
-.table-view .column-header, .table-view .filler {
-  -fx-size: 34px;
-  -fx-border-color: -color-border;
-  -fx-border-width: 0 0 1 0;
-}
-.table-view .table-row-cell {
-  -fx-background-color: -color-surface;
-  -fx-cell-size: 34px;
-}
-.table-view .table-row-cell:odd {
-  -fx-background-color: #FAFAFD;
-}
-.table-view .table-row-cell:hover {
-  -fx-background-color: derive(-color-primary-100, 15%);
-}
-.table-view:focused .table-row-cell:filled:focused, 
-.table-view:focused .table-row-cell:filled:selected {
-  -fx-background-color: derive(-color-primary, 80%);
-  -fx-text-fill: white;
-}
-.table-column.align-right .label, 
-.table-view .table-cell.align-right {
-  -fx-alignment: CENTER_RIGHT;
-}
-
-/* ============ SCROLLBARS ============ */
-.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
-  -fx-background-color: rgba(0,0,0,0.25);
-  -fx-background-radius: 8;
-}
-.scroll-bar:horizontal .track, .scroll-bar:vertical .track {
-  -fx-background-color: transparent;
-}
-
-/* ============ SPLITPANE ============ */
-.split-pane:horizontal > .split-pane-divider, 
-.split-pane:vertical > .split-pane-divider {
-  -fx-background-color: -color-border;
-  -fx-padding: 0.3em;
-}
-
-/* ============ PROGRESS / OVERLAYS ============ */
-.progress-indicator {
-  -fx-progress-color: -color-primary;
-}
-.overlay {
-  -fx-background-color: rgba(0,0,0,0.06);
-}
-
-/* ============ BADGES DE ESTADO (si los aplicas en celdas) ============ */
-/* Úsalos como styleClass en Labels dentro de celdas, p.ej. “badge badge-cocina” */
+/* Badges de estado (para Labels dentro de celdas) */
 .badge {
   -fx-background-radius: 999;
   -fx-padding: 2 8 2 8;
   -fx-text-fill: white;
   -fx-font-size: 11px;
-  -fx-font-weight: bold;
+  -fx-font-weight: 600;
 }
-.badge-registrado { -fx-background-color: -color-info; }
-.badge-cocina     { -fx-background-color: -color-warning; }
-.badge-cocinando  { -fx-background-color: derive(-color-warning, -15%); }
-.badge-cocinado   { -fx-background-color: -color-primary; }
-.badge-entregado  { -fx-background-color: -color-success; }
-.badge-cancelado  { -fx-background-color: -color-danger; }
+.badge--gris     { -fx-background-color: #E5E7EB; -fx-text-fill: #374151; }
+.badge--azul     { -fx-background-color: -color-info; }
+.badge--naranja  { -fx-background-color: -color-warning; }
+.badge--verde    { -fx-background-color: -color-success; }
+.badge--celeste  { -fx-background-color: -color-sky; }
+.badge--rojo     { -fx-background-color: -color-danger; }
+.badge--morado   { -fx-background-color: -color-purple; }
 
-/* ============ LABELS, TEXTOS ============ */
-.label { -fx-text-fill: -color-text; }
-.muted { -fx-text-fill: -color-text-muted; }
+/* Mapa sugerido:
+   NUEVO -> .badge .badge--gris
+   CONFIRMADO -> .badge .badge--azul
+   EN_COCINA -> .badge .badge--naranja
+   LISTO -> .badge .badge--verde
+   ENVIADO -> .badge .badge--celeste
+   ENTREGADO -> .badge .badge--verde
+   CANCELADO -> .badge .badge--rojo
+   ASIGNADO -> .badge .badge--morado
+   EN_RUTA -> .badge .badge--azul
+   FALLIDO -> .badge .badge--rojo
+*/
 
-/* ============ PANELES / REGIONES ============ */
-.region, .pane, .stack-pane, .hbox, .vbox, .border-pane {
-  -fx-background-color: transparent;
-}
-
-/* ============ HERRAMIENTAS DE AYUDA ============ */
+/* Tarjetas (cards KPI, módulos, etc.) */
 .card {
   -fx-background-color: -color-surface;
-  -fx-background-radius: 12;
+  -fx-background-radius: 16;
+  -fx-border-color: -color-border;
+  -fx-border-radius: 16;
   -fx-padding: 12;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 10, 0.2, 0, 2);
+}
+
+/* =================== FORMULARIOS =================== */
+.text-field, .combo-box-base, .date-picker, .spinner, .password-field {
+  -fx-background-color: -color-surface, -color-surface, -color-surface;
+  -fx-background-insets: 0, 1, 2;
+  -fx-background-radius: 12, 12, 12;
+  -fx-padding: 8 12 8 12;
   -fx-border-color: -color-border;
   -fx-border-radius: 12;
 }
-
-/* ============ HOVER FOCUS GENERAL ============ */
-:focused {
-  -fx-focus-color: -color-primary;
-  -fx-faint-focus-color: rgba(217,46,127,0.15);
+.text-field:focused, .combo-box-base:focused, .date-picker:focused,
+.spinner:focused, .password-field:focused {
+  -fx-border-color: -color-primary;
+  -fx-effect: dropshadow(gaussian, rgba(219,39,119,0.15), 8, 0.2, 0, 0);
 }
+
+/* Labels utilitarios */
+.label       { -fx-text-fill: -color-text; }
+.label-muted { -fx-text-fill: -color-text-muted; -fx-font-size: 12px; }
+
+/* =================== TABLEVIEW (tablas) =================== */
+.table-view {
+  -fx-background-color: -color-surface;
+  -fx-background-radius: 16;
+  -fx-border-color: -color-border;
+  -fx-border-radius: 16;
+  -fx-padding: 2;
+}
+.table-view .placeholder .label { -fx-text-fill: -color-text-muted; }
+.table-view .column-header-background {
+  -fx-background-color: #F6F7FB;
+  -fx-background-radius: 16 16 0 0;
+}
+.table-view .column-header, .table-view .filler {
+  -fx-size: 36px;
+  -fx-border-color: -color-border;
+  -fx-border-width: 0 0 1 0;
+  -fx-font-weight: 600;
+  -fx-text-fill: -color-text-muted;
+}
+.table-view .table-row-cell {
+  -fx-background-color: -color-surface;
+  -fx-cell-size: 36px;
+}
+.table-view .table-row-cell:odd   { -fx-background-color: #FBFBFD; }
+.table-view .table-row-cell:hover { -fx-background-color: #F3F4F6; }
+.table-view:focused .table-row-cell:filled:focused,
+.table-view:focused .table-row-cell:filled:selected {
+  -fx-background-color: derive(-color-primary, 80%);
+  -fx-text-fill: white;
+}
+
+/* Alineaciones de columnas */
+.table-column.align-right .label, .table-view .table-cell.align-right { -fx-alignment: CENTER_RIGHT; }
+.table-column.align-center .label, .table-view .table-cell.align-center { -fx-alignment: CENTER; }
+
+/* Botones de acciones en celdas */
+.cell-actions .button {
+  -fx-background-radius: 8;
+  -fx-padding: 4 8 4 8;
+  -fx-font-size: 12px;
+}
+
+/* =================== SCROLLBARS =================== */
+.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+  -fx-background-color: rgba(0,0,0,0.25);
+  -fx-background-radius: 8;
+}
+.scroll-bar:horizontal .track, .scroll-bar:vertical .track { -fx-background-color: transparent; }
+
+/* =================== SPLITPANE =================== */
+.split-pane:horizontal > .split-pane-divider,
+.split-pane:vertical   > .split-pane-divider {
+  -fx-background-color: -color-border;
+  -fx-padding: 0.3em;
+}
+
+/* =================== PROGRESS / OVERLAYS =================== */
+.progress-indicator { -fx-progress-color: -color-primary; }
+.overlay { -fx-background-color: rgba(0,0,0,0.06); }
+
+/* =================== UTILIDADES =================== */
+.mt-2 { -fx-padding: 8 0 0 0; }
+.mt-3 { -fx-padding: 12 0 0 0; }
+.mt-4 { -fx-padding: 16 0 0 0; }
+
+.mono { -fx-font-family: "JetBrains Mono", "Consolas", monospace; }
+
+/* Estados para toolbars de acciones masivas */
+.toolbar-actions .button {
+  -fx-background-radius: 12;
+  -fx-padding: 6 10 6 10;
+  -fx-font-weight: 600;
+}
+
+/* =================== GRÁFICOS (simple, si usas Canvas/Pane) =================== */
+/* Si dibujas barras como nodos rectangulares, estas clases ayudan a mantener consistencia */
+.barchart-bar {
+  -fx-background-color: -color-primary;
+  -fx-background-radius: 8 8 0 0;
+}
+.barchart-label {
+  -fx-text-fill: -color-text-muted;
+  -fx-font-size: 11px;
+  -fx-padding: 4 0 0 0;
+}
+/* Títulos y KPI */
+.h2 { -fx-font-size: 18px; -fx-font-weight: bold; }
+.kpi { -fx-font-size: 20px; -fx-font-weight: bold; }
+.strong { -fx-font-weight: bold; }
+
+/* Pills / badges */
+.pill {
+  -fx-background-color: #e9ecef;
+  -fx-text-fill: #333;
+  -fx-padding: 4 10 4 10;
+  -fx-background-radius: 999;
+  -fx-font-weight: bold;
+}
+.badge { -fx-padding: 2 8 2 8; -fx-background-radius: 999; -fx-font-weight: bold; }
+.badge-pending  { -fx-background-color: #ffe8a1; -fx-text-fill: #654d00; }
+.badge-success  { -fx-background-color: #c6f6d5; -fx-text-fill: #1f6b43; }
+.badge-warn     { -fx-background-color: #ffe3c1; -fx-text-fill: #7a3f00; }
+.badge-danger   { -fx-background-color: #ffccd5; -fx-text-fill: #8a1c2b; }
+
+/* Botones semánticos */
+.button.btn-success { -fx-background-color: #18a05e; -fx-text-fill: white; }
+.button.btn-warn    { -fx-background-color: #f59e0b; -fx-text-fill: white; }
+.button.btn-danger  { -fx-background-color: #e11d48; -fx-text-fill: white; }
+
+/* Overlay de carga */
+.shade { -fx-background-color: rgba(0,0,0,0.06); }
+
+/* Tabla: alineación de número/moneda */
+.table-cell.mono {
+  -fx-font-family: "Consolas", "Menlo", "Courier New", monospace;
+}
+

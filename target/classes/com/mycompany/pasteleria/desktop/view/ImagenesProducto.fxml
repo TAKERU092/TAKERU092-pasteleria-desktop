@@ -1,6 +1,5 @@
-<!-- src/main/resources/com/mycompany/pasteleria/desktop/view/ImagenesProducto.fxml -->
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- src/main/resources/com/mycompany/pasteleria/desktop/view/ImagenesProducto.fxml -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>

@@ -1,60 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- ruta: src/main/resources/com/mycompany/pasteleria/desktop/view/MainView.fxml -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.mycompany.pasteleria.desktop.controller.ShellController"
             prefWidth="1200" prefHeight="720">
 
-  <!-- Top bar -->
   <top>
-    <HBox spacing="8" styleClass="topbar">
+    <HBox spacing="12" styleClass="topbar" prefHeight="64" minHeight="64" maxHeight="64">
       <children>
-        <Label fx:id="lblTitle" text="Pastelería" styleClass="title"/>
+        <Rectangle width="32" height="32" arcWidth="16" arcHeight="16" styleClass="logo-accent"/>
+        <Label fx:id="lblTitle" text="Pastelería – Backoffice" styleClass="title"/>
+        <Label fx:id="lblBreadcrumb" text="Inicio / Dashboard" styleClass="breadcrumb"/>
         <Pane HBox.hgrow="ALWAYS"/>
-        <!-- Botones superiores (opcionales) -->
-        <Button text="Clientes" onAction="#showClientes" styleClass="topbtn" mnemonicParsing="false"/>
-        <Button text="Pedidos"  onAction="#showPedidos"  styleClass="topbtn" mnemonicParsing="false"/>
-        <Button text="Cocina"   onAction="#showCocina"   styleClass="topbtn" mnemonicParsing="false"/>
+        <Label fx:id="lblUser" text="Usuario: caja01 (CAJA)" styleClass="topmeta"/>
+        <Label fx:id="lblClock" text="23/10 00:15" styleClass="topmeta"/>
+        <Button fx:id="btnLogout" text="Cerrar sesión" onAction="#logout" styleClass="topbtn" mnemonicParsing="false"/>
       </children>
-      <padding>
-        <Insets top="10" right="14" bottom="10" left="14"/>
-      </padding>
+      <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
     </HBox>
   </top>
 
-  <!-- Sidebar con Scroll si la ventana se hace pequeña -->
   <left>
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="sidebar-scroll">
       <content>
-        <VBox spacing="6" styleClass="sidebar" prefWidth="200" minWidth="160" maxWidth="260">
-          <padding><Insets top="16" right="10" bottom="16" left="10"/></padding>
+        <VBox spacing="6" styleClass="sidebar" prefWidth="256" minWidth="256" maxWidth="256">
+          <padding><Insets top="16" right="12" bottom="16" left="12"/></padding>
+
+          <fx:define>
+            <ToggleGroup fx:id="navGroup"/>
+          </fx:define>
+
           <children>
-            <ToggleButton fx:id="btnClientes"   text="Clientes"   onAction="#showClientes"
-                          selected="true" styleClass="navbtn"/>
-            <ToggleButton fx:id="btnPedidos"    text="Pedidos"    onAction="#showPedidos"
-                          styleClass="navbtn"/>
-            <ToggleButton fx:id="btnCocina"     text="Cocina"     onAction="#showCocina"
-                          styleClass="navbtn"/>
-            <ToggleButton fx:id="btnProductos"  text="Productos"  onAction="#showProductos"
-                          styleClass="navbtn"/>
-            <ToggleButton fx:id="btnCategorias" text="Categorías" onAction="#showCategorias"
-                          styleClass="navbtn"/>
+            <ToggleButton fx:id="navDashboard" text="Inicio (Dashboard)" toggleGroup="$navGroup"
+                          onAction="#showClientes" selected="true" styleClass="navbtn"/>
+
+            <!-- NUEVO: Pagos -->
+            <ToggleButton fx:id="navPagos" text="Pagos" toggleGroup="$navGroup"
+                          onAction="#showPagos" styleClass="navbtn"/>
+
+            <ToggleButton fx:id="navPedidos" text="Pedidos" toggleGroup="$navGroup"
+                          onAction="#showPedidos" styleClass="navbtn"/>
+            <ToggleButton fx:id="navRegistrar" text="Registrar pedido" toggleGroup="$navGroup"
+                          onAction="#showPedidos" styleClass="navbtn"/>
+            <ToggleButton fx:id="navKds" text="Cocina (KDS)" toggleGroup="$navGroup"
+                          onAction="#showCocina" styleClass="navbtn"/>
+            <ToggleButton fx:id="navEnvios" text="Envíos" toggleGroup="$navGroup"
+                          onAction="#showPedidos" styleClass="navbtn"/>
+            <ToggleButton fx:id="navReportes" text="Reportes" toggleGroup="$navGroup"
+                          onAction="#showProductos" styleClass="navbtn"/>
 
             <Separator/>
-            <Label text="Próximamente" styleClass="section"/>
-            <Button text="Reportes" disable="true" styleClass="navbtn" mnemonicParsing="false"/>
+
+            <ToggleButton fx:id="navClientes" text="Clientes" toggleGroup="$navGroup"
+                          onAction="#showClientes" styleClass="navbtn"/>
+            <ToggleButton fx:id="navProductos" text="Productos" toggleGroup="$navGroup"
+                          onAction="#showProductos" styleClass="navbtn"/>
+            <ToggleButton fx:id="navConfig" text="Configuración" toggleGroup="$navGroup"
+                          onAction="#showCategorias" styleClass="navbtn"/>
           </children>
         </VBox>
       </content>
     </ScrollPane>
   </left>
 
-  <!-- Contenido -->
   <center>
-    <!-- StackPane permite overlays (loaders, diálogos ligeros, etc.) -->
     <StackPane fx:id="contentPane" styleClass="content">
       <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
     </StackPane>
