@@ -29,7 +29,7 @@ public class ShellController {
   @FXML private ToggleButton navPagos;     // NUEVO: botón Pagos
   @FXML private ToggleButton navPedidos;
   @FXML private ToggleButton navRegistrar;
-  @FXML private ToggleButton navKds;
+  @FXML private ToggleButton navCocina;
   @FXML private ToggleButton navEnvios;
   @FXML private ToggleButton navReportes;
   @FXML private ToggleButton navClientes;
@@ -42,7 +42,7 @@ public class ShellController {
   // Rutas FXML
   private static final String FXML_PAGOS      = "/com/mycompany/pasteleria/desktop/view/Pagos.fxml";      // NUEVO
   private static final String FXML_PEDIDOS    = "/com/mycompany/pasteleria/desktop/view/Pedidos.fxml";
-  private static final String FXML_COCINA     = "/com/mycompany/pasteleria/desktop/view/KDS.fxml"; // usa Cocina.fxml si corresponde
+  private static final String FXML_COCINA     = "/com/mycompany/pasteleria/desktop/view/Cocina.fxml"; // usa Cocina.fxml si corresponde
   private static final String FXML_PRODUCTOS  = "/com/mycompany/pasteleria/desktop/view/Productos.fxml";
   private static final String FXML_CATEGORIAS = "/com/mycompany/pasteleria/desktop/view/Categorias.fxml";
 
@@ -93,7 +93,7 @@ public class ShellController {
 
   @FXML
   public void showCocina() {
-    select(navKds, "Cocina (KDS)", "Inicio / Cocina (KDS)");
+    select(navCocina, "Cocina", "Inicio / Cocina");
     loadIntoCenter("COCINA", FXML_COCINA);
   }
 
@@ -141,7 +141,7 @@ public class ShellController {
     if (navPagos     != null) navPagos.setSelected(false);
     if (navPedidos   != null) navPedidos.setSelected(false);
     if (navRegistrar != null) navRegistrar.setSelected(false);
-    if (navKds       != null) navKds.setSelected(false);
+    if (navCocina       != null) navCocina.setSelected(false);
     if (navEnvios    != null) navEnvios.setSelected(false);
     if (navReportes  != null) navReportes.setSelected(false);
     if (navClientes  != null) navClientes.setSelected(false);

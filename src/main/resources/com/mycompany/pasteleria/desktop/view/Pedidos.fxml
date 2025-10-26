@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- src/main/resources/com/mycompany/pasteleria/desktop/view/Pedidos.fxml -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -8,80 +7,57 @@
       fx:controller="com.mycompany.pasteleria.desktop.controller.PedidosController"
       spacing="12" fillWidth="true">
 
-  <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
 
-  <!-- ===================== Barra superior ===================== -->
+  <!-- Topbar: título + buscar + MULTIFILTRO estados -->
   <HBox spacing="8" alignment="CENTER_LEFT">
     <children>
-      <Label text="Pedidos" styleClass="title"/>
+      <Label text="Pedidos" style="-fx-font-size:16; -fx-font-weight:700;"/>
       <Pane HBox.hgrow="ALWAYS"/>
       <TextField fx:id="txtBuscar" promptText="Buscar N° o cliente..." prefWidth="280"/>
-      <ComboBox fx:id="cbEstado" promptText="Estado" prefWidth="180"/>
+      <!-- Botón de menú con check múltiples para estados -->
+      <MenuButton fx:id="btnEstados" text="Filtrar estados" mnemonicParsing="false" />
       <Button fx:id="btnBuscar" text="Buscar" onAction="#buscar"/>
-      <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar" styleClass="btn-ghost"/>
-      <Button fx:id="btnNuevopedido" text="Nuevo Pedido" onAction="#nuevoPedido"/>
+      <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar"/>
     </children>
   </HBox>
 
-  <!-- ===================== KPIs (mantengo tus ids para el controller) ===================== -->
-  <HBox spacing="12" alignment="CENTER_LEFT">
-    <children>
-      <TitledPane text="Total" expanded="true">
-        <content><Label fx:id="lblTotal" style="-fx-font-size:20; -fx-font-weight:700;"/></content>
-      </TitledPane>
-      <TitledPane text="Página" expanded="true">
-        <content><Label fx:id="lblPagina" style="-fx-font-size:20; -fx-font-weight:700;"/></content>
-      </TitledPane>
-      <TitledPane text="Filtro" expanded="true">
-        <content><Label fx:id="lblFiltro" styleClass="label-muted"/></content>
-      </TitledPane>
-      <TitledPane text="Estado" expanded="true">
-        <content><Label fx:id="lblEstado" styleClass="label-muted"/></content>
-      </TitledPane>
-      <Pane HBox.hgrow="ALWAYS"/>
-      <Button fx:id="btnExport" text="Exportar CSV" onAction="#exportarCSV" styleClass="btn-ghost"/>
-    </children>
-  </HBox>
-
-  <!-- ===================== Tabla + overlay ===================== -->
+  <!-- Tabla -->
   <StackPane VBox.vgrow="ALWAYS">
     <children>
 
       <TableView fx:id="tbl" prefHeight="520">
         <columns>
-          <TableColumn fx:id="colNum"     text="N°"            prefWidth="90"  styleClass="align-right"/>
-          <TableColumn fx:id="colCliente" text="Cliente"       prefWidth="240"/>
-          <TableColumn fx:id="colFecPed"  text="Fecha Pedido"  prefWidth="160"/>
-          <TableColumn fx:id="colFecEnt"  text="Fecha Entrega" prefWidth="140"/>
-          <TableColumn fx:id="colHorEnt"  text="Hora Entrega"  prefWidth="120"/>
-          <TableColumn fx:id="colEstado"  text="Estado"        prefWidth="150" styleClass="align-center"/>
-          <TableColumn fx:id="colTotal"   text="Total"         prefWidth="120" styleClass="align-right"/>
+          <TableColumn fx:id="colNum"     text="N°"            prefWidth="90"/>
+          <TableColumn fx:id="colCliente" text="Cliente"       prefWidth="260"/>
+          <TableColumn fx:id="colFecPed"  text="Fecha pedido"  prefWidth="140"/>
+          <TableColumn fx:id="colFecEnt"  text="Fecha entrega" prefWidth="140"/>
+          <TableColumn fx:id="colHorEnt"  text="Hora entrega"  prefWidth="120"/>
+          <TableColumn fx:id="colEstado"  text="Estado"        prefWidth="150"/>
         </columns>
         <placeholder>
           <Label text="Sin pedidos. Ajusta filtros o refresca."/>
         </placeholder>
       </TableView>
 
-      <!-- Overlay usando la clase de tu app.css -->
-      <Region styleClass="overlay" visible="${loader.visible}" mouseTransparent="false"/>
+      <!-- Overlay de carga -->
+      <Region visible="${loader.visible}" mouseTransparent="false"
+              style="-fx-background-color: rgba(0,0,0,0.06);" />
       <ProgressIndicator fx:id="loader" visible="false"
                          maxWidth="80" maxHeight="80" StackPane.alignment="CENTER"/>
 
     </children>
   </StackPane>
 
-  <!-- ===================== Acciones + paginación ===================== -->
-  <HBox spacing="8" alignment="CENTER_LEFT" styleClass="toolbar-actions">
+  <!-- Acciones + paginación -->
+  <HBox spacing="8" alignment="CENTER_LEFT">
     <children>
-      <Label text="Cambiar estado:" styleClass="label-muted"/>
-      <Button fx:id="btnToCocina"    text="A cocina"   onAction="#toCocina"    styleClass="btn-warn"/>
-      <Button fx:id="btnToCocinando" text="Cocinando"  onAction="#toCocinando" styleClass="btn-info"/>
-      <Button fx:id="btnToCocinado"  text="Cocinado"   onAction="#toCocinado"  styleClass="btn-success"/>
-      <Button fx:id="btnToEntregado" text="Entregado"  onAction="#toEntregado" styleClass="btn-emerald"/>
-      <Button fx:id="btnToCancelado" text="Cancelado"  onAction="#toCancelado" styleClass="btn-danger"/>
+      <Label text="Acciones:"/>
+      <Button fx:id="btnToCocina" text="Enviar a cocina" onAction="#toEnCocina"/>
+      <Button fx:id="btnAsignar"  text="Asignar delivery" onAction="#asignarDelivery"/>
       <Pane HBox.hgrow="ALWAYS"/>
-      <Label fx:id="lblRango" text="Mostrando —" styleClass="label-muted"/>
-      <Button fx:id="btnPrev" text="Anterior" onAction="#paginaAnterior" styleClass="btn-ghost"/>
+      <Label fx:id="lblRango" text="Mostrando —"/>
+      <Button fx:id="btnPrev" text="Anterior" onAction="#paginaAnterior"/>
       <Button fx:id="btnNext" text="Siguiente" onAction="#paginaSiguiente"/>
     </children>
   </HBox>

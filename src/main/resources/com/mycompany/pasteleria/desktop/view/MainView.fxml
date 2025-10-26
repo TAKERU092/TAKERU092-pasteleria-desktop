@@ -46,7 +46,7 @@
                           onAction="#showPedidos" styleClass="navbtn"/>
             <ToggleButton fx:id="navRegistrar" text="Registrar pedido" toggleGroup="$navGroup"
                           onAction="#showPedidos" styleClass="navbtn"/>
-            <ToggleButton fx:id="navKds" text="Cocina (KDS)" toggleGroup="$navGroup"
+            <ToggleButton fx:id="navCocina" text="Cocina" toggleGroup="$navGroup"
                           onAction="#showCocina" styleClass="navbtn"/>
             <ToggleButton fx:id="navEnvios" text="Envíos" toggleGroup="$navGroup"
                           onAction="#showPedidos" styleClass="navbtn"/>

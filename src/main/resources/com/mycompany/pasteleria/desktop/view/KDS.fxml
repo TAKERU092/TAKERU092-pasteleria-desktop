@@ -1,42 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- RUTA: src/main/resources/com/mycompany/pasteleria/desktop/view/KDS.fxml -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.TilePane?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.mycompany.pasteleria.desktop.controller.KDSController"
-      spacing="12" fillWidth="true">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.mycompany.pasteleria.desktop.controller.KDSController">
 
-  <padding>
-    <Insets top="16" right="16" bottom="16" left="16"/>
-  </padding>
+  <children>
 
-  <!-- Encabezado -->
-  <HBox spacing="8" alignment="CENTER_LEFT">
-    <children>
-      <Label text="Cocina (KDS)" styleClass="title"/>
-      <Pane HBox.hgrow="ALWAYS"/>
-      <ComboBox fx:id="cbFiltro" promptText="PENDIENTE / EN_PROCESO / TODOS" prefWidth="260"/>
-      <CheckBox fx:id="chkAutoRefresh" text="AutoRefresh"/>
-      <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar" styleClass="btn-ghost"/>
-    </children>
-  </HBox>
+    <!-- ===================== Contenido ===================== -->
+    <VBox spacing="12" fillWidth="true">
+      <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+      </padding>
 
-  <!-- Grilla de tarjetas -->
-  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
-    <content>
-      <TilePane fx:id="grid" hgap="12" vgap="12" padding="0">
-        <!-- Tarjetas se inyectan desde el controlador -->
-      </TilePane>
-    </content>
-  </ScrollPane>
+      <!-- Topbar -->
+      <HBox spacing="8" alignment="CENTER_LEFT">
+        <children>
+          <Label text="KDS — Cocina" styleClass="title"/>
+          <Pane HBox.hgrow="ALWAYS"/>
 
-  <!-- Overlay de carga -->
-  <StackPane VBox.vgrow="NEVER" pickOnBounds="false">
-    <children>
-      <Region styleClass="overlay" visible="${loader.visible}" mouseTransparent="false"/>
-      <ProgressIndicator fx:id="loader" visible="false" maxWidth="80" maxHeight="80" StackPane.alignment="CENTER"/>
-    </children>
-  </StackPane>
-</VBox>
+          <ComboBox fx:id="cbFiltro" promptText="PENDIENTE / EN_PROCESO / TODOS" prefWidth="240"/>
+          <CheckBox fx:id="chkAutoRefresh" text="AutoRefresh"/>
+          <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar" styleClass="btn-ghost"/>
+        </children>
+      </HBox>
+
+      <!-- Grid de tarjetas dentro de un ScrollPane -->
+      <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS" hbarPolicy="NEVER">
+        <content>
+          <TilePane fx:id="grid"
+                    hgap="12" vgap="12"
+                    prefColumns="3">
+            <padding>
+              <Insets top="4" right="4" bottom="4" left="4"/>
+            </padding>
+          </TilePane>
+        </content>
+      </ScrollPane>
+    </VBox>
+
+    <!-- ===================== Overlay de carga ===================== -->
+    <StackPane pickOnBounds="false">
+      <children>
+        <Region styleClass="overlay"
+                visible="${loader.visible}"
+                mouseTransparent="false"/>
+        <ProgressIndicator fx:id="loader"
+                           visible="false"
+                           maxWidth="80" maxHeight="80"/>
+      </children>
+    </StackPane>
+
+  </children>
+</StackPane>

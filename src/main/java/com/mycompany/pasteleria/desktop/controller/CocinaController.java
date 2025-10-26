@@ -1,18 +1,23 @@
-// src/main/java/com/mycompany/pasteleria/desktop/controller/CocinaController.java
+// RUTA: src/main/java/com/mycompany/pasteleria/desktop/controller/CocinaController.java
 package com.mycompany.pasteleria.desktop.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.pasteleria.desktop.config.AppConfig;
-import com.mycompany.pasteleria.desktop.model.DetallePedido;
-import com.mycompany.pasteleria.desktop.model.Pedido;
 import com.mycompany.pasteleria.desktop.net.ApiClient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,282 +28,276 @@ import java.util.stream.Collectors;
 
 public class CocinaController {
 
-  // ---------- UI: lista de pedidos ----------
-  @FXML private TableView<RowPedido> tblPedidos;
-  @FXML private TableColumn<RowPedido, String> colNum, colCliente, colEstado, colEntrega, colTotal;
+  // IZQ: cards
+  @FXML private TilePane grid;
 
-  // ---------- UI: detalle ----------
-  @FXML private Label lblTituloDetalle, lblTotalPedido;
+  // DER: resumen + acciones
+  @FXML private Label lblPedido, lblEstado, lblCliente, lblFecPed, lblFecEnt, lblHorEnt, lblTotalPedido;
+  @FXML private TextArea txtComentarios;
+  @FXML private Button btnEnPrep, btnServido;
+
+  // Detalle (2 columnas)
   @FXML private TableView<RowDetalle> tblDetalle;
-  @FXML private TableColumn<RowDetalle, String> colProd, colCant, colPrecio, colSub;
+  @FXML private TableColumn<RowDetalle, String> colProd, colCant;
 
+  @FXML private Button btnRefrescar;
   @FXML private ProgressIndicator loader;
 
-  // (Opcional) botones para cambiar estado: declara en FXML con estos fx:id si los tienes
-  @FXML private Button btnCocinando, btnCocinado, btnEntregado, btnCancelado;
-  @FXML private Button btnRefrescar; // si tienes un botón de refrescar
-
-  // ---------- Estado / servicios ----------
   private final ApiClient api = new ApiClient(AppConfig.SUPABASE_URL, AppConfig.SUPABASE_ANON_KEY);
   private final ObjectMapper om = new ObjectMapper();
-  private List<Pedido> pedidos = List.of();
-  private Integer pedidoSeleccionado = null;
 
-  // Referencias a tareas en curso (para cancelar si fuese necesario)
-  private Task<?> loadPedidosTask;
-  private Task<?> loadDetalleTask;
-  private Task<?> patchTask;
+  private List<Map<String,Object>> pedidos = List.of();
+  private Integer idSeleccionado = null;
+  private final Map<Integer, Node> cardById = new HashMap<>();
 
-  // ---------- Row models (para TableView) ----------
-  public static class RowPedido {
-    private final String num, cliente, estado, entrega, total;
-    public RowPedido(String n, String c, String e, String en, String t){ num=n; cliente=c; estado=e; entrega=en; total=t; }
-    public String getNum(){ return num; } public String getCliente(){ return cliente; }
-    public String getEstado(){ return estado; } public String getEntrega(){ return entrega; } public String getTotal(){ return total; }
-  }
+  private Task<?> loadPedidosTask, loadDetalleTask, patchTask;
+
   public static class RowDetalle {
-    private final String producto, cantidad, precio, subtotal;
-    public RowDetalle(String p, String c, String pr, String s){ producto=p; cantidad=c; precio=pr; subtotal=s; }
-    public String getProducto(){ return producto; } public String getCantidad(){ return cantidad; }
-    public String getPrecio(){ return precio; } public String getSubtotal(){ return subtotal; }
+    private final String producto, cantidad;
+    public RowDetalle(String p, String c){ this.producto=p; this.cantidad=c; }
+    public String getProducto(){ return producto; }
+    public String getCantidad(){ return cantidad; }
   }
 
-  // ---------- Ciclo de vida ----------
   @FXML
   public void initialize() {
-    // columnas pedidos
-    colNum.setCellValueFactory(new PropertyValueFactory<>("num"));
-    colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
-    colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-    colEntrega.setCellValueFactory(new PropertyValueFactory<>("entrega"));
-    colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+    // Ajuste anti “3ª columna”
+    tblDetalle.getColumns().setAll(colProd, colCant);
+    tblDetalle.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-    // columnas detalle
-    colProd.setCellValueFactory(new PropertyValueFactory<>("producto"));
-    colCant.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-    colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-    colSub.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
+    // TilePane: cada tile (card) 260 px y alineado arriba-izquierda
+    grid.setTileAlignment(Pos.TOP_LEFT);
+    grid.setPrefTileWidth(260);   // ancho deseado por card
+    grid.setPrefTileHeight(TilePane.USE_COMPUTED_SIZE);
 
-    // selección por ÍTEM (no por índice; robusto frente a ordenamiento/filtrado)
-    tblPedidos.getSelectionModel().selectedItemProperty().addListener((obs, oldRow, newRow) -> {
-      if (newRow != null) {
-        try {
-          pedidoSeleccionado = Integer.parseInt(newRow.getNum());
-          cargarDetalle(pedidoSeleccionado);
-        } catch (NumberFormatException ex) {
-          pedidoSeleccionado = null;
-        }
-      }
-    });
+    if (btnRefrescar != null) btnRefrescar.setOnAction(e -> refrescar());
+    if (btnEnPrep   != null) btnEnPrep.setOnAction(e -> cambiarEstado("EN_PREPARACION"));
+    if (btnServido  != null) btnServido.setOnAction(e -> cambiarEstado("SERVIDO"));
 
-    // carga inicial
     refrescar();
   }
 
-  // ---------- Acciones ----------
-  @FXML public void refrescar() { cargarPedidos(); }
-  @FXML public void toCocinando(){ cambiarEstado("COCINANDO"); }
-  @FXML public void toCocinado(){  cambiarEstado("COCINADO"); }
-  @FXML public void toEntregado(){ cambiarEstado("ENTREGADO"); }
-  @FXML public void toCancelado(){ cambiarEstado("CANCELADO"); }
+  /* Acciones desde FXML */
+  @FXML private void toEnPreparacion(){ cambiarEstado("EN_PREPARACION"); }
+  @FXML private void toServido(){       cambiarEstado("SERVIDO"); }
+  @FXML public void refrescar(){ cargarPedidos(); }
 
-  // ---------- Cargas ----------
+  /* Cargas */
   private void cargarPedidos() {
-    cancelar(loadPedidosTask); // evita carreras si el usuario pulsa varias veces
+    cancelar(loadPedidosTask);
     setLoading(true);
 
-    String select = enc("id_pedido,id_cliente,fecha_pedido,fecha_entrega,hora_entrega,estado,total,cliente:cliente(nombre,apellido)");
-    String path = "/pedidos?select=" + select + "&or=(" + enc("estado.eq.COCINA,estado.eq.COCINANDO") + ")"
-        + "&order=fecha_pedido.asc&limit=50";
+    String select = enc("id_pedido,fecha_pedido,fecha_entrega,hora_entrega,estado,total,comentarios,cliente:cliente(nombre,apellido)");
+    String path = "/pedidos?select=" + select +
+        "&or=(" + enc("estado.eq.EN_COCINA,estado.eq.EN_PREPARACION") + ")" +
+        "&order=fecha_pedido.asc&limit=200";
 
-    loadPedidosTask = new Task<List<RowPedido>>() {
-      @Override protected List<RowPedido> call() throws Exception {
+    loadPedidosTask = new Task<>() {
+      @Override protected List<Map<String, Object>> call() throws Exception {
         var resp = api.getResp(path);
-        if (resp.statusCode() < 200 || resp.statusCode() >= 300)
+        if (resp.statusCode()<200 || resp.statusCode()>=300)
           throw new RuntimeException("HTTP " + resp.statusCode() + "\n" + resp.body());
-
-        pedidos = om.readValue(resp.body(), new TypeReference<List<Pedido>>(){});
-        return pedidos.stream().map(p -> new RowPedido(
-            String.valueOf(p.id_pedido),
-            p.cliente != null ? ((s(p.cliente.nombre) + " " + s(p.cliente.apellido)).trim()) : "—",
-            s(p.estado),
-            (s(p.fecha_entrega) + " " + s(p.hora_entrega)).trim(),
-            s(p.total)
-        )).collect(Collectors.toList());
+        return om.readValue(resp.body(), new TypeReference<List<Map<String,Object>>>(){});
       }
     };
 
-    loadPedidosTask.setOnSucceeded(ev -> {
-      tblPedidos.setItems(FXCollections.observableArrayList(((Task<List<RowPedido>>) ev.getSource()).getValue()));
-      lblTituloDetalle.setText("Detalle del pedido —");
+    loadPedidosTask.setOnSucceeded(e -> {
+      pedidos = (List<Map<String, Object>>) ((Task<?>) e.getSource()).getValue();
+      renderCards(pedidos);
+      idSeleccionado = null;
+      pintarEncabezado(null);
       tblDetalle.getItems().clear();
       lblTotalPedido.setText("—");
       setLoading(false);
     });
-
-    loadPedidosTask.setOnFailed(ev -> {
+    loadPedidosTask.setOnFailed(e -> {
       setLoading(false);
-      Throwable ex = Optional.ofNullable(ev.getSource().getException()).orElse(new RuntimeException("Error desconocido"));
-      showError("No se pudo cargar pedidos.\n" + ex.getMessage());
+      showError("No se pudo cargar pedidos.\n" +
+          (e.getSource().getException()!=null? e.getSource().getException().getMessage() : ""));
     });
 
-    new Thread(loadPedidosTask, "cocina-load-pedidos").start();
+    new Thread(loadPedidosTask, "cocina-load").start();
   }
 
   private void cargarDetalle(int idPedido) {
     cancelar(loadDetalleTask);
     setLoading(true);
 
-    String select = enc("id_detalle,id_pedido,id,producto,cantidad,precio_unitario");
+    String select = enc("id_detalle,id_pedido,id_producto,cantidad,producto:productos(nombre)");
     String path = "/detalle_pedido?select=" + select + "&id_pedido=eq." + idPedido + "&order=id_detalle.asc";
 
     loadDetalleTask = new Task<List<RowDetalle>>() {
       @Override protected List<RowDetalle> call() throws Exception {
         var resp = api.getResp(path);
-        if (resp.statusCode() < 200 || resp.statusCode() >= 300)
+        if (resp.statusCode()<200 || resp.statusCode()>=300)
           throw new RuntimeException("HTTP " + resp.statusCode() + "\n" + resp.body());
-
-        var detalles = om.readValue(resp.body(), new TypeReference<List<DetallePedido>>(){});
-
-        BigDecimal total = BigDecimal.ZERO;
-        List<RowDetalle> rows = new ArrayList<>();
-        for (DetallePedido d : detalles) {
-          BigDecimal pu   = parseMoney(d.precio_unitario);
-          BigDecimal cant = toBD(d.cantidad);
-          BigDecimal sub  = pu.multiply(cant);
-          total = total.add(sub);
-          rows.add(new RowDetalle(
-              s(d.producto),
-              cant.stripTrailingZeros().toPlainString(),
-              money(pu),
-              money(sub)
-          ));
-        }
-
-        // Llevar el total calculado a Thread FX a través de valor de mensaje (opcional)
-        updateMessage(total.toPlainString());
-        return rows;
+        List<Map<String,Object>> dets = om.readValue(resp.body(), new TypeReference<List<Map<String,Object>>>(){});
+        return dets.stream().map(d -> {
+          Map<String,Object> prod = asMap(d.get("producto"));
+          String nombre = s(prod.get("nombre"));
+          String cant   = stripZeros(parseBD(d.get("cantidad")));
+          return new RowDetalle(nombre.isBlank()? "—" : nombre, cant);
+        }).collect(Collectors.toList());
       }
     };
 
-    loadDetalleTask.setOnSucceeded(ev -> {
+    loadDetalleTask.setOnSucceeded(e -> {
       @SuppressWarnings("unchecked")
-      Task<List<RowDetalle>> t = (Task<List<RowDetalle>>) ev.getSource();
-      tblDetalle.setItems(FXCollections.observableArrayList(t.getValue()));
-      // total desde message(); si es null, recalcular en FX (seguro pero más costoso)
-      String totalStr = Optional.ofNullable(t.getMessage()).orElse("0");
-      lblTituloDetalle.setText("Detalle del pedido — " + idPedido);
-      lblTotalPedido.setText(money(new BigDecimal(totalStr)));
+      var rows = (List<RowDetalle>) ((Task<?>) e.getSource()).getValue();
+      tblDetalle.setItems(FXCollections.observableArrayList(rows));
+      Map<String,Object> mp = buscar(idPedido);
+      if (mp != null) lblTotalPedido.setText(money(parseBD(mp.get("total"))));
       setLoading(false);
     });
-
-    loadDetalleTask.setOnFailed(ev -> {
+    loadDetalleTask.setOnFailed(e -> {
       setLoading(false);
-      Throwable ex = Optional.ofNullable(ev.getSource().getException()).orElse(new RuntimeException("Error desconocido"));
-      showError("No se pudo cargar detalle.\n" + ex.getMessage());
+      showError("No se pudo cargar el detalle.\n" +
+          (e.getSource().getException()!=null? e.getSource().getException().getMessage() : ""));
     });
 
-    new Thread(loadDetalleTask, "cocina-load-detalle").start();
+    new Thread(loadDetalleTask, "cocina-detalle").start();
   }
 
-  // ---------- Cambios de estado ----------
-  private void cambiarEstado(String nuevo) {
-    if (pedidoSeleccionado == null) { showError("Selecciona un pedido de la lista."); return; }
+  /* Cards */
+  private void renderCards(List<Map<String,Object>> data) {
+    grid.getChildren().clear();
+    cardById.clear();
 
+    for (Map<String,Object> m : data) {
+      int id = Integer.parseInt(String.valueOf(m.get("id_pedido")));
+      Node card = buildCard(m);
+      cardById.put(id, card);
+      grid.getChildren().add(card);
+    }
+  }
+
+  private Node buildCard(Map<String,Object> m){
+    int id = Integer.parseInt(String.valueOf(m.get("id_pedido")));
+    String estado = s(m.get("estado"));
+    Map<String,Object> c = asMap(m.get("cliente"));
+    String cliente = (s(c.get("nombre")) + " " + s(c.get("apellido"))).trim();
+
+    VBox box = new VBox(6);
+    box.getStyleClass().add("card");
+    box.setPadding(new Insets(10));
+    // === ancho mínimo y preferido por card ===
+    box.setMinWidth(260);
+    box.setPrefWidth(260);
+
+    Label lNum = new Label("#" + id);
+    lNum.setStyle("-fx-font-weight:700;");
+
+    Label lEst = new Label(estado);
+    lEst.getStyleClass().addAll("badge", cssBadgeFor(estado));
+
+    var spacer = new Pane();
+    HBox head = new HBox(8, lNum, spacer, lEst);
+    HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+    Label lCli = new Label(cliente.isBlank()? "—" : cliente);
+    lCli.setWrapText(true);
+
+    box.getChildren().addAll(head, lCli);
+    box.setOnMouseClicked(ev -> selectCard(id));
+    return box;
+  }
+
+  private void selectCard(int id){
+    idSeleccionado = id;
+    pintarEncabezado(buscar(id));
+    cargarDetalle(id);
+  }
+
+  /* Cambiar estado */
+  private void cambiarEstado(String nuevo) {
+    if (idSeleccionado == null) { showError("Selecciona un pedido."); return; }
     cancelar(patchTask);
     setLoading(true);
 
-    patchTask = new Task<Void>() {
+    int id = idSeleccionado;
+    patchTask = new Task<>() {
       @Override protected Void call() throws Exception {
         String body = "{\"estado\":\""+nuevo+"\"}";
-        var resp = api.patchJson("/pedidos?id_pedido=eq." + pedidoSeleccionado, body);
-
-        // PostgREST puede devolver 200 (con representación) o 204 (sin cuerpo)
-        if (resp.statusCode() == 200 || resp.statusCode() == 204) return null;
+        var resp = api.patchJson("/pedidos?id_pedido=eq." + id, body);
+        if (resp.statusCode()==200 || resp.statusCode()==204) return null;
         throw new RuntimeException("HTTP " + resp.statusCode() + "\n" + resp.body());
       }
     };
-
-    patchTask.setOnSucceeded(ev -> {
-      info("Estado actualizado a " + nuevo);
-      // Vuelve a cargar lista y limpia detalle (evita parpadeos manteniendo selección si quieres)
-      cargarPedidos();
-    });
-
-    patchTask.setOnFailed(ev -> {
-      setLoading(false);
-      Throwable ex = Optional.ofNullable(ev.getSource().getException()).orElse(new RuntimeException("Error desconocido"));
-      showError("No se pudo actualizar.\n" + ex.getMessage());
-    });
-
-    new Thread(patchTask, "cocina-patch").start();
+    patchTask.setOnSucceeded(e -> { info("Pedido " + id + " → " + nuevo); refrescar(); });
+    patchTask.setOnFailed(e -> { setLoading(false); showError("No se pudo actualizar.\n" +
+        (e.getSource().getException()!=null? e.getSource().getException().getMessage() : "")); });
+    new Thread(patchTask,"cocina-patch").start();
   }
 
-  // ---------- Utils ----------
-  private void setLoading(boolean v){
-    // Solo ejecutar en FX thread
-    if (!Platform.isFxApplicationThread()) {
-      Platform.runLater(() -> setLoading(v));
-      return;
+  /* Encabezado */
+  private void pintarEncabezado(Map<String,Object> m){
+    if (m == null) {
+      lblPedido.setText("—"); lblEstado.setText("—"); lblEstado.getStyleClass().removeIf(c -> c.startsWith("badge--"));
+      lblCliente.setText("—"); lblFecPed.setText("—"); lblFecEnt.setText("—"); lblHorEnt.setText("—");
+      txtComentarios.setText(""); lblTotalPedido.setText("—"); return;
     }
-    loader.setVisible(v);
-    if (tblPedidos != null) tblPedidos.setDisable(v);
-    if (tblDetalle != null) tblDetalle.setDisable(v);
+    String est = s(m.get("estado"));
+    Map<String,Object> c = asMap(m.get("cliente"));
+    String cliente = (s(c.get("nombre")) + " " + s(c.get("apellido"))).trim();
 
-    // Deshabilita acciones mientras hay I/O
-    if (btnCocinando != null) btnCocinando.setDisable(v);
-    if (btnCocinado  != null) btnCocinado.setDisable(v);
-    if (btnEntregado != null) btnEntregado.setDisable(v);
-    if (btnCancelado != null) btnCancelado.setDisable(v);
+    lblPedido.setText(String.valueOf(m.get("id_pedido")));
+    lblEstado.setText(est);
+    lblEstado.getStyleClass().removeIf(cn -> cn.startsWith("badge--"));
+    lblEstado.getStyleClass().addAll("badge", cssBadgeFor(est));
+    lblCliente.setText(cliente.isBlank()? "—" : cliente);
+    lblFecPed.setText(fechaBonita(s(m.get("fecha_pedido"))));
+    lblFecEnt.setText(fechaBonita(s(m.get("fecha_entrega"))));
+    lblHorEnt.setText(horaBonita(s(m.get("hora_entrega"))));
+    txtComentarios.setText(s(m.get("comentarios")));
+    lblTotalPedido.setText(money(parseBD(m.get("total"))));
+  }
+
+  /* Helpers básicos */
+  private Map<String,Object> buscar(int id){
+    for (var m : pedidos) if (String.valueOf(m.get("id_pedido")).equals(String.valueOf(id))) return m;
+    return null;
+  }
+  private void setLoading(boolean v){
+    if (!Platform.isFxApplicationThread()) { Platform.runLater(() -> setLoading(v)); return; }
+    if (loader != null) loader.setVisible(v);
+    if (grid != null) grid.setDisable(v);
+    if (tblDetalle != null) tblDetalle.setDisable(v);
+    if (btnEnPrep != null) btnEnPrep.setDisable(v);
+    if (btnServido != null) btnServido.setDisable(v);
     if (btnRefrescar != null) btnRefrescar.setDisable(v);
   }
 
-  private static String s(String x){ return x==null? "" : x; }
-
-  private static String money(BigDecimal v){
-    if (v == null) v = BigDecimal.ZERO;
-    return "S/ " + v.setScale(2, RoundingMode.HALF_UP).toPlainString();
-  }
-
-  private static BigDecimal parseMoney(String s){
-    try {
-      String norm = (s==null || s.isBlank()) ? "0" : s.replace(",", ".");
-      return new BigDecimal(norm);
-    } catch(Exception e){
-      return BigDecimal.ZERO;
-    }
-  }
-
-  // Convierte números a BigDecimal de forma segura (evita binario flotante)
-  private static BigDecimal toBD(Object n) {
-    if (n == null) return BigDecimal.ZERO;
-    if (n instanceof BigDecimal bd) return bd;
-    return new BigDecimal(String.valueOf(n));
-  }
-
-  private void showError(String m){
-    // Siempre en FX thread
-    if (!Platform.isFxApplicationThread()) {
-      Platform.runLater(() -> showError(m));
-      return;
-    }
-    new Alert(Alert.AlertType.ERROR, m, ButtonType.OK).showAndWait();
-  }
-
-  private void info(String m){
-    if (!Platform.isFxApplicationThread()) {
-      Platform.runLater(() -> info(m));
-      return;
-    }
-    new Alert(Alert.AlertType.INFORMATION, m, ButtonType.OK).showAndWait();
-  }
-
+  private static String s(Object x){ return x==null? "" : String.valueOf(x); }
+  private static Map<String,Object> asMap(Object o){ return (o instanceof Map<?,?> m)? (Map<String,Object>) m : Map.of(); }
   private static String enc(String x){ return URLEncoder.encode(x, StandardCharsets.UTF_8); }
-
-  private static void cancelar(Task<?> t) {
-    if (t != null && t.isRunning()) {
-      t.cancel(true);
-    }
+  private static BigDecimal parseBD(Object v){
+    try { if (v==null) return BigDecimal.ZERO; if (v instanceof BigDecimal bd) return bd;
+      String s = String.valueOf(v).replace(',','.');
+      return s.isBlank()? BigDecimal.ZERO : new BigDecimal(s);
+    } catch(Exception e){ return BigDecimal.ZERO; }
   }
-}
+  private static String stripZeros(BigDecimal v){ return v==null? "0" : v.stripTrailingZeros().toPlainString(); }
+  private static String money(BigDecimal v){ if (v==null) v = BigDecimal.ZERO; return "S/ " + v.setScale(2, RoundingMode.HALF_UP).toPlainString(); }
+  private static String fechaBonita(String iso){
+    if (iso==null||iso.isBlank()) return "—";
+    String s = iso; int t = s.indexOf('T'); if (t>0) s = s.substring(0,t);
+    if (s.length()<10) return s; String dd = s.substring(8,10);
+    int m = 1; try { m = Integer.parseInt(s.substring(5,7)); } catch(Exception ignored){}
+    String[] MES = {"ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"};
+    return dd + " " + MES[Math.max(1,Math.min(12,m))-1];
+  }
+  private static String horaBonita(String time){ if (time==null||time.isBlank()) return "—"; return time.length()>=5? time.substring(0,5) : time; }
+  private void showError(String m){ if (!Platform.isFxApplicationThread()) { Platform.runLater(() -> showError(m)); return; } new Alert(Alert.AlertType.ERROR, m, ButtonType.OK).showAndWait(); }
+  private void info(String m){ if (!Platform.isFxApplicationThread()) { Platform.runLater(() -> info(m)); return; } new Alert(Alert.AlertType.INFORMATION, m, ButtonType.OK).showAndWait(); }
 
+  private static String cssBadgeFor(String estado){
+    if (estado == null) return "badge--gris";
+    return switch (estado) {
+      case "EN_COCINA"      -> "badge--naranja";
+      case "EN_PREPARACION" -> "badge--azul";
+      case "SERVIDO"        -> "badge--verde";
+      default               -> "badge--gris";
+    };
+  }
+  private static void cancelar(Task<?> t){ if (t!=null && t.isRunning()) t.cancel(true); }
+}

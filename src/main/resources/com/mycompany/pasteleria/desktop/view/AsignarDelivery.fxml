@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.pasteleria.desktop.controller.AsignarDeliveryController"
+      spacing="12" fillWidth="true">
+  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+
+  <TitledPane text="Datos del cliente" expanded="true">
+    <content>
+      <GridPane hgap="10" vgap="6">
+        <columnConstraints>
+          <ColumnConstraints minWidth="120"/>
+          <ColumnConstraints minWidth="260" hgrow="ALWAYS"/>
+        </columnConstraints>
+        <children>
+          <Label text="Cliente:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+          <Label fx:id="lblCliente" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+          <Label text="Teléfono:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+          <Label fx:id="lblTelefono" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+          <Label text="Dirección:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+          <Label fx:id="lblDireccion" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+          <Label text="Distrito:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+          <Label fx:id="lblDistrito" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+          <Label text="Referencia:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+          <Label fx:id="lblReferencia" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        </children>
+      </GridPane>
+    </content>
+  </TitledPane>
+
+  <TitledPane text="Asignación" expanded="true">
+    <content>
+      <GridPane hgap="10" vgap="8">
+        <columnConstraints>
+          <ColumnConstraints minWidth="120"/>
+          <ColumnConstraints minWidth="240" hgrow="ALWAYS"/>
+        </columnConstraints>
+        <children>
+          <Label text="Delivery:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+          <ComboBox fx:id="cbDelivery" prefWidth="260" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+          <Label text="Hora salida:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+          <TextField fx:id="txtHoraSalida" promptText="HH:mm" prefWidth="120" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        </children>
+      </GridPane>
+    </content>
+  </TitledPane>
+
+  <HBox spacing="8" alignment="CENTER_RIGHT">
+    <children>
+      <Button text="Cancelar" onAction="#cancelar"/>
+      <Button text="Asignar"  onAction="#confirmar"/>
+    </children>
+  </HBox>
+</VBox>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/resources/com/mycompany/pasteleria/desktop/view/Pagos.fxml -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -6,67 +7,54 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.mycompany.pasteleria.desktop.controller.PagosController"
-      spacing="12">
-  <padding>
-    <Insets top="16" right="16" bottom="16" left="16"/>
-  </padding>
+      spacing="12"
+      styleClass="content">
+  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
 
   <children>
 
-    <!-- Top bar -->
-    <ToolBar>
+    <ToolBar styleClass="topbar">
       <items>
-        <Label text="Pagos (en revisión)" style="-fx-font-size:18; -fx-font-weight:bold;"/>
+        <Label text="Aprobar pagos" styleClass="title"/>
         <Separator/>
         <TextField fx:id="txtBuscar" promptText="Buscar N° pedido o método" prefWidth="300"/>
         <Button fx:id="btnBuscar" text="Buscar" onAction="#buscar" mnemonicParsing="false"/>
-        <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar" mnemonicParsing="false"/>
+        <Separator/>
+        <Label text="Estado:" styleClass="label-muted"/>
+        <ComboBox fx:id="cmbEstado" prefWidth="220" promptText="Seleccionar estado"/>
+        <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar" mnemonicParsing="false" styleClass="btn-ghost"/>
         <Pane HBox.hgrow="ALWAYS"/>
       </items>
     </ToolBar>
 
-    <!-- KPIs -->
-    <HBox spacing="12" alignment="CENTER_LEFT">
-      <children>
-        <TitledPane text="Total" expanded="true">
-          <content><Label fx:id="lblTotal" style="-fx-font-size:20; -fx-font-weight:bold;"/></content>
-        </TitledPane>
-        <TitledPane text="Página" expanded="true">
-          <content><Label fx:id="lblPagina" style="-fx-font-size:20; -fx-font-weight:bold;"/></content>
-        </TitledPane>
-        <TitledPane text="Filtro" expanded="true">
-          <content><Label fx:id="lblFiltro"/></content>
-        </TitledPane>
-        <Pane HBox.hgrow="ALWAYS"/>
-      </children>
-    </HBox>
-
-    <!-- Centro: tabla | detalle -->
     <StackPane VBox.vgrow="ALWAYS">
       <children>
-        <SplitPane dividerPositions="0.50">
+
+        <SplitPane dividerPositions="0.52">
           <items>
 
             <!-- Tabla -->
             <VBox spacing="8">
               <children>
 
-                <TableView fx:id="tbl" editable="true" prefHeight="560" VBox.vgrow="ALWAYS">
+                <!-- OJO: sin columnResizePolicy aquí -->
+                <TableView fx:id="tbl" editable="false" prefHeight="560" VBox.vgrow="ALWAYS">
                   <columns>
-                    <!-- id_pago oculto (no se muestra) -->
                     <TableColumn fx:id="colIdPedido" text="N° Pedido" prefWidth="120"/>
-                    <TableColumn fx:id="colMonto"    text="Monto"     prefWidth="140"/>
-                    <TableColumn fx:id="colMetodo"   text="Método"    prefWidth="160"/>
-                    <TableColumn fx:id="colEstado"   text="Estado"    prefWidth="160"/>
-                    <TableColumn fx:id="colSubido"   text="Fecha"     prefWidth="200"/>
+                    <TableColumn fx:id="colMonto"    text="Total"      prefWidth="140" styleClass="align-right"/>
+                    <TableColumn fx:id="colMetodo"   text="Método"     prefWidth="160"/>
+                    <TableColumn fx:id="colEstado"   text="Estado"     prefWidth="160" styleClass="align-center"/>
+                    <TableColumn fx:id="colSubido"   text="Fecha"      prefWidth="200"/>
                   </columns>
-                  <placeholder><Label text="No hay pagos en revisión."/></placeholder>
+                  <placeholder>
+                    <Label text="No hay pagos para mostrar." styleClass="label-muted"/>
+                  </placeholder>
                 </TableView>
 
                 <HBox spacing="8" alignment="CENTER_RIGHT">
                   <children>
-                    <Label fx:id="lblRango" text="Mostrando —"/>
-                    <Button fx:id="btnPrev" text="Anterior" onAction="#paginaAnterior"/>
+                    <Label fx:id="lblRango" text="Mostrando —" styleClass="label-muted"/>
+                    <Button fx:id="btnPrev" text="Anterior" onAction="#paginaAnterior" styleClass="btn-ghost"/>
                     <Button fx:id="btnNext" text="Siguiente" onAction="#paginaSiguiente"/>
                   </children>
                 </HBox>
@@ -80,19 +68,15 @@
                 <TitledPane text="Comprobante" expanded="true">
                   <content>
                     <BorderPane>
-                      <center>
-                        <WebView fx:id="webComprobante" prefHeight="420"/>
-                      </center>
+                      <center><WebView fx:id="webComprobante" prefHeight="420"/></center>
                       <bottom>
                         <HBox spacing="8" alignment="CENTER_RIGHT">
-                          <padding>
-                            <Insets top="8" right="8" bottom="8" left="8"/>
-                          </padding>
+                          <padding><Insets top="8" right="8" bottom="8" left="8"/></padding>
                           <children>
-                            <Label text="URL:"/>
+                            <Label text="URL:" styleClass="label-muted"/>
                             <Label fx:id="lblUrl" maxWidth="Infinity"/>
                             <Pane HBox.hgrow="ALWAYS"/>
-                            <Button text="Abrir en navegador" onAction="#abrirEnNavegador"/>
+                            <Button text="Abrir en navegador" onAction="#abrirEnNavegador" styleClass="btn-ghost"/>
                           </children>
                         </HBox>
                       </bottom>
@@ -103,22 +87,23 @@
                 <TitledPane text="Comparativa" expanded="true">
                   <content>
                     <GridPane hgap="10" vgap="8">
-                      <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
-                      </padding>
+                      <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
                       <columnConstraints>
                         <ColumnConstraints minWidth="120" percentWidth="40"/>
                         <ColumnConstraints minWidth="100" percentWidth="60"/>
                       </columnConstraints>
                       <children>
-                        <Label text="Total pedido:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                        <Label fx:id="lblTotalPedido" style="-fx-font-weight:bold;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-                        <Label text="Monto comprobante:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                        <Label fx:id="lblMontoComprobante" style="-fx-font-weight:bold;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-                        <Label text="Diferencia:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                        <Label fx:id="lblDiferencia" style="-fx-font-weight:bold;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <Label text="Total pedido:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="label-muted"/>
+                        <Label fx:id="lblTotalPedido" style="-fx-font-weight:700;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <Label text="Monto comprobante:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="label-muted"/>
+                        <HBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                          <children>
+                            <TextField fx:id="txtMontoComprobante" promptText="Ej: 45.90" onAction="#guardarMontoComprobante" prefWidth="140"/>
+                            <Button text="Guardar monto" onAction="#guardarMontoComprobante" styleClass="btn-emerald"/>
+                          </children>
+                        </HBox>
+                        <Label text="Diferencia:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="label-muted"/>
+                        <Label fx:id="lblDiferencia" style="-fx-font-weight:700;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
                       </children>
                     </GridPane>
                   </content>
@@ -126,10 +111,8 @@
 
                 <HBox spacing="8" alignment="CENTER_RIGHT">
                   <children>
-                    <Label text="Cambiar estado (pedido):"/>
-                    <Button fx:id="btnAprobar"   text="Aprobar"     onAction="#aprobar"/>
-                    <Button fx:id="btnFaltoPago" text="Faltó pago"  onAction="#faltoPago"/>
-                    <Button fx:id="btnCancelar"  text="Cancelar"    onAction="#cancelar"/>
+                    <Button fx:id="btnAprobar" text="Aprobado" onAction="#aprobar" styleClass="btn-success"/>
+                    <Button fx:id="btnPagoNoValido" text="Pago no válido" onAction="#pagoNoValido" styleClass="btn-danger"/>
                   </children>
                 </HBox>
 
@@ -139,8 +122,7 @@
           </items>
         </SplitPane>
 
-        <!-- Overlay -->
-        <Region fx:id="shade" style="-fx-background-color: rgba(0,0,0,0.06);" visible="false" mouseTransparent="false"/>
+        <Region fx:id="shade" styleClass="overlay" visible="false" mouseTransparent="false"/>
         <ProgressIndicator fx:id="loader" visible="false" maxWidth="80" maxHeight="80" StackPane.alignment="CENTER"/>
 
       </children>
