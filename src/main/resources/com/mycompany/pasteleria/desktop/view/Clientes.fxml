@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ruta: src/main/resources/com/mycompany/pasteleria/desktop/view/Clientes.fxml -->
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mycompany.pasteleria.desktop.controller.ClientesController"
+      spacing="12" fillWidth="true">
+
+  <padding>
+    <Insets top="16" right="16" bottom="16" left="16"/>
+  </padding>
+
+  <!-- ===================== Encabezado de página ===================== -->
+  <HBox spacing="8" alignment="CENTER_LEFT">
+    <children>
+      <Label text="Clientes" styleClass="title"/>
+      <Pane HBox.hgrow="ALWAYS"/>
+      <TextField fx:id="txtBuscar"
+                 promptText="Buscar por nombre o teléfono"
+                 prefWidth="320"/>
+      <Button fx:id="btnBuscar" text="Buscar" onAction="#buscar"/>
+      <Button fx:id="btnNuevo"  text="Nuevo cliente" onAction="#nuevoCliente" styleClass="btn-ghost"/>
+    </children>
+  </HBox>
+
+  <!-- ===================== Tabla + overlay de carga ===================== -->
+  <StackPane VBox.vgrow="ALWAYS">
+    <children>
+
+      <TableView fx:id="tblClientes" prefHeight="520">
+        <columns>
+          <TableColumn fx:id="colNombre"    text="Nombre"     prefWidth="240"/>
+          <TableColumn fx:id="colTelefono"  text="Teléfono"   prefWidth="160"/>
+          <TableColumn fx:id="colDireccion" text="Dirección"  prefWidth="420"/>
+          <TableColumn fx:id="colPedidos"   text="Pedidos"    prefWidth="100" styleClass="align-center"/>
+          <TableColumn fx:id="colAcciones"  text="Acciones"   prefWidth="180" styleClass="align-center"/>
+        </columns>
+        <placeholder>
+          <Label text="Sin resultados. Ajusta el filtro y vuelve a buscar."/>
+        </placeholder>
+      </TableView>
+
+      <!-- Overlay: bloquea clics cuando loader.visible = true -->
+      <Region styleClass="overlay"
+              visible="${loader.visible}"
+              mouseTransparent="false"/>
+
+      <ProgressIndicator fx:id="loader"
+                         visible="false"
+                         maxWidth="80" maxHeight="80"
+                         StackPane.alignment="CENTER"/>
+
+    </children>
+  </StackPane>
+
+  <!-- ===================== Paginación ===================== -->
+  <HBox spacing="8" alignment="CENTER_RIGHT">
+    <children>
+      <Label fx:id="lblRango" text="Mostrando —" styleClass="label-muted"/>
+      <Pane HBox.hgrow="ALWAYS"/>
+      <Button fx:id="btnPrev" text="Anterior" onAction="#paginaAnterior" styleClass="btn-ghost"/>
+      <Button fx:id="btnNext" text="Siguiente" onAction="#paginaSiguiente"/>
+    </children>
+  </HBox>
+
+</VBox>

@@ -77,6 +77,18 @@ public class PedidosController {
     colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
     colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 
+    // === Badge visual para ESTADO (igual al mock) ===
+    colEstado.setCellFactory(col -> new TableCell<Row, String>() {
+      @Override protected void updateItem(String estado, boolean empty) {
+        super.updateItem(estado, empty);
+        setText(null);
+        if (empty || estado == null || estado.isBlank()) { setGraphic(null); return; }
+        Label badge = new Label(mapEstadoUi(estado));
+        badge.getStyleClass().addAll("badge", cssBadgeFor(estado)); // usa clases de tu app.css
+        setGraphic(badge);
+      }
+    });
+
     // Enter = buscar
     txtBuscar.setOnAction(e -> buscar());
 
@@ -118,74 +130,76 @@ public class PedidosController {
       info("Exportado: " + f.getAbsolutePath());
     } catch(Exception ex){ alert("Error al exportar: "+ex.getMessage()); }
   }
-@FXML public void nuevoPedido() {
-  try {
-    var url = getClass().getResource("/com/mycompany/pasteleria/desktop/view/NuevoPedido.fxml");
-    if (url == null) throw new IllegalStateException("Falta NuevoPedido.fxml");
-    Dialog<ButtonType> dlg = new Dialog<>();
-    dlg.setTitle("Nuevo Pedido");
-    dlg.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
-    javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(url);
-    dlg.getDialogPane().setContent(root);
 
-    // Obtener el controller para pedir el payload al aceptar
-    javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(url);
-    javafx.scene.Parent root2 = loader.load();
-    NuevoPedidoController ctrl = loader.getController();
+  @FXML public void nuevoPedido() {
+    try {
+      var url = getClass().getResource("/com/mycompany/pasteleria/desktop/view/NuevoPedido.fxml");
+      if (url == null) throw new IllegalStateException("Falta NuevoPedido.fxml");
+      Dialog<ButtonType> dlg = new Dialog<>();
+      dlg.setTitle("Nuevo Pedido");
+      dlg.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
+      javafx.scene.Parent root = javafx.fxml.FXMLLoader.load(url);
+      dlg.getDialogPane().setContent(root);
 
-    dlg.getDialogPane().setContent(root2);
-    var res = dlg.showAndWait();
-    if (res.isPresent() && res.get() == ButtonType.OK) {
-      // Enviar a Supabase
-      var payload = ctrl.buildPayload();       // JSON pedido
-      var detalles = ctrl.buildDetallesArray(); // JSON array de detalles
-      crearPedidoEnBD(payload, detalles);
-    }
-  } catch (Exception e) {
-    alert("No se pudo abrir el diálogo.\n" + e.getMessage());
-  }
-}
+      // Obtener el controller para pedir el payload al aceptar
+      javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(url);
+      javafx.scene.Parent root2 = loader.load();
+      NuevoPedidoController ctrl = loader.getController();
 
-// Inserta pedido y luego sus detalles
-private void crearPedidoEnBD(String pedidoJson, String detallesJson) {
-  setLoading(true);
-  Task<Void> task = new Task<>() {
-    @Override protected Void call() throws Exception {
-      try {
-        // 1) Crear pedido (REGISTRADO). Prefer: return=representation devuelve el id
-        var respPedido = api.postJson("/pedidos", pedidoJson);
-        if (respPedido.statusCode() < 200 || respPedido.statusCode() >= 300) {
-          throw new RuntimeException("HTTP " + respPedido.statusCode() + "\n" + respPedido.body());
-        }
-        // Parsear id_pedido
-        java.util.List<com.mycompany.pasteleria.desktop.model.Pedido> creados =
-            new com.fasterxml.jackson.databind.ObjectMapper().readValue(
-                respPedido.body(),
-                new com.fasterxml.jackson.core.type.TypeReference<java.util.List<com.mycompany.pasteleria.desktop.model.Pedido>>(){}
-            );
-        if (creados.isEmpty() || creados.get(0).id_pedido == null)
-          throw new RuntimeException("No se recibió id_pedido.");
-
-        int idPedido = creados.get(0).id_pedido;
-
-        // 2) Insertar detalles (array) asignando id_pedido
-        //   Reemplazamos el marcador __ID_PEDIDO__ del JSON
-        String detallesPayload = detallesJson.replace("__ID_PEDIDO__", String.valueOf(idPedido));
-        var respDet = api.postJson("/detalle_pedido", detallesPayload);
-        if (respDet.statusCode() < 200 || respDet.statusCode() >= 300) {
-          throw new RuntimeException("HTTP " + respDet.statusCode() + "\n" + respDet.body());
-        }
-        return null;
-      } catch (Exception ex) {
-        throw ex;
+      dlg.getDialogPane().setContent(root2);
+      var res = dlg.showAndWait();
+      if (res.isPresent() && res.get() == ButtonType.OK) {
+        // Enviar a Supabase
+        var payload = ctrl.buildPayload();       // JSON pedido
+        var detalles = ctrl.buildDetallesArray(); // JSON array de detalles
+        crearPedidoEnBD(payload, detalles);
       }
+    } catch (Exception e) {
+      alert("No se pudo abrir el diálogo.\n" + e.getMessage());
     }
-  };
-  task.setOnSucceeded(e -> { info("Pedido creado."); consultar(); });
-  task.setOnFailed(e -> { setLoading(false); showError("No se pudo crear el pedido.\n" +
-      (task.getException()!=null? task.getException().getMessage() : "")); });
-  new Thread(task,"create-pedido").start();
-}
+  }
+
+  // Inserta pedido y luego sus detalles
+  private void crearPedidoEnBD(String pedidoJson, String detallesJson) {
+    setLoading(true);
+    Task<Void> task = new Task<>() {
+      @Override protected Void call() throws Exception {
+        try {
+          // 1) Crear pedido (REGISTRADO). Prefer: return=representation devuelve el id
+          var respPedido = api.postJson("/pedidos", pedidoJson);
+          if (respPedido.statusCode() < 200 || respPedido.statusCode() >= 300) {
+            throw new RuntimeException("HTTP " + respPedido.statusCode() + "\n" + respPedido.body());
+          }
+          // Parsear id_pedido
+          java.util.List<com.mycompany.pasteleria.desktop.model.Pedido> creados =
+              new com.fasterxml.jackson.databind.ObjectMapper().readValue(
+                  respPedido.body(),
+                  new com.fasterxml.jackson.core.type.TypeReference<java.util.List<com.mycompany.pasteleria.desktop.model.Pedido>>(){}
+              );
+          if (creados.isEmpty() || creados.get(0).id_pedido == null)
+            throw new RuntimeException("No se recibió id_pedido.");
+
+          int idPedido = creados.get(0).id_pedido;
+
+          // 2) Insertar detalles (array) asignando id_pedido
+          //   Reemplazamos el marcador __ID_PEDIDO__ del JSON
+          String detallesPayload = detallesJson.replace("__ID_PEDIDO__", String.valueOf(idPedido));
+          var respDet = api.postJson("/detalle_pedido", detallesPayload);
+          if (respDet.statusCode() < 200 || respDet.statusCode() >= 300) {
+            throw new RuntimeException("HTTP " + respDet.statusCode() + "\n" + respDet.body());
+          }
+          return null;
+        } catch (Exception ex) {
+          throw ex;
+        }
+      }
+    };
+    task.setOnSucceeded(e -> { info("Pedido creado."); consultar(); });
+    task.setOnFailed(e -> { setLoading(false); showError("No se pudo crear el pedido.\n" +
+        (task.getException()!=null? task.getException().getMessage() : "")); });
+    new Thread(task,"create-pedido").start();
+  }
+
   // ---------- Cargar desde Supabase ----------
   private void consultar() {
     cancelar(consultaTask);
@@ -405,5 +419,28 @@ private void crearPedidoEnBD(String pedidoJson, String detallesJson) {
 
   private static void cancelar(Task<?> t) {
     if (t != null && t.isRunning()) t.cancel(true);
+  }
+
+  // ====== Helpers visuales para badges ======
+  private static String mapEstadoUi(String estado) {
+    if (estado == null) return "—";
+    return switch (estado) {
+      case "COCINA"     -> "PENDIENTE";
+      case "COCINANDO"  -> "EN_PROCESO";
+      case "COCINADO"   -> "LISTO";
+      default           -> estado;
+    };
+  }
+
+  private static String cssBadgeFor(String estado) {
+    if (estado == null) return "badge--gris";
+    return switch (estado) {
+      case "COCINA"     -> "badge--naranja";
+      case "COCINANDO"  -> "badge--azul";
+      case "COCINADO"   -> "badge--verde";
+      case "ENTREGADO"  -> "badge--verde";   // opcional, mismo verde
+      case "CANCELADO"  -> "badge--rojo";    // si definiste rojo; si no, usa -color-danger
+      default           -> "badge--gris";
+    };
   }
 }
