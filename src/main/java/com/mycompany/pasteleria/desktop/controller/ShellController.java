@@ -1,3 +1,4 @@
+// RUTA: src/main/java/com/mycompany/pasteleria/desktop/controller/ShellController.java
 package com.mycompany.pasteleria.desktop.controller;
 
 import java.net.URL;
@@ -17,186 +18,262 @@ import javafx.util.Duration;
 
 public class ShellController {
 
-  // Content
-  @FXML private StackPane contentPane;
+    // ========== CENTER ==========
+    @FXML private StackPane contentPane;
 
-  // Topbar
-  @FXML private Label lblTitle;
-  @FXML private Label lblBreadcrumb;
+    // ========== TOPBAR ==========
+    @FXML private Label lblTitle;
+    @FXML private Label lblBreadcrumb;
+    @FXML private Label lblUser;   // están en el FXML
+    @FXML private Label lblClock;  // están en el FXML
 
-  // Sidebar (IDs tal como están en MainView.fxml)
-  @FXML private ToggleButton navDashboard;
-  @FXML private ToggleButton navPagos;     // NUEVO: botón Pagos
-  @FXML private ToggleButton navPedidos;
-  @FXML private ToggleButton navRegistrar;
-  @FXML private ToggleButton navCocina;
-  @FXML private ToggleButton navEnvios;
-  @FXML private ToggleButton navReportes;
-  @FXML private ToggleButton navClientes;
-  @FXML private ToggleButton navProductos;
-  @FXML private ToggleButton navConfig;
+    // ========== SIDEBAR ==========
+    @FXML private ToggleButton navDashboard;
+    @FXML private ToggleButton navPagos;
+    @FXML private ToggleButton navPedidos;
+    @FXML private ToggleButton navRegistrar;
+    @FXML private ToggleButton navCocina;
+    @FXML private ToggleButton navEnvios;
+    @FXML private ToggleButton navReportes;
+    @FXML private ToggleButton navClientes;
+    @FXML private ToggleButton navProductos;
+    @FXML private ToggleButton navConfig;
 
-  // Cache de vistas
-  private final Map<String, Parent> viewCache = new HashMap<>();
+    // ========== CACHE ==========
+    private final Map<String, Parent> viewCache = new HashMap<>();
 
-  // Rutas FXML
-  private static final String FXML_PAGOS      = "/com/mycompany/pasteleria/desktop/view/Pagos.fxml";      // NUEVO
-  private static final String FXML_PEDIDOS    = "/com/mycompany/pasteleria/desktop/view/Pedidos.fxml";
-  private static final String FXML_COCINA     = "/com/mycompany/pasteleria/desktop/view/Cocina.fxml"; // usa Cocina.fxml si corresponde
-  private static final String FXML_PRODUCTOS  = "/com/mycompany/pasteleria/desktop/view/Productos.fxml";
-  private static final String FXML_CATEGORIAS = "/com/mycompany/pasteleria/desktop/view/Categorias.fxml";
+    // ========== RUTAS FXML ==========
+    private static final String FXML_DASHBOARD  = "/com/mycompany/pasteleria/desktop/view/Dashboard.fxml";
+    private static final String FXML_PAGOS      = "/com/mycompany/pasteleria/desktop/view/Pagos.fxml";
+    private static final String FXML_PEDIDOS    = "/com/mycompany/pasteleria/desktop/view/Pedidos.fxml";
+    private static final String FXML_COCINA     = "/com/mycompany/pasteleria/desktop/view/Cocina.fxml";
+    private static final String FXML_PRODUCTOS  = "/com/mycompany/pasteleria/desktop/view/Productos.fxml";
+    private static final String FXML_CATEGORIAS = "/com/mycompany/pasteleria/desktop/view/Categorias.fxml";
 
-  // Por ahora “Dashboard” apunta a Categorías/Clientes (ajústalo cuando tengas Dashboard real)
-  private static final String FXML_DASHBOARD  = FXML_CATEGORIAS;
+    // Vistas que todavía no existen: reciclamos
+    private static final String FXML_REGISTRAR  = FXML_PEDIDOS;
+    private static final String FXML_ENVIOS     = FXML_PEDIDOS;
+    private static final String FXML_REPORTES   = FXML_DASHBOARD;
 
-  @FXML
-  public void initialize() {
-    // Carga inicial (igual que antes)
-    showClientes();
-  }
-
-  // ====================== Handlers topbar ======================
-  @FXML
-  private void logout() {
-    // Cierra directo; si prefieres confirmación, descomenta el bloque
-    javafx.application.Platform.exit();
-
-    /*
-    Alert a = new Alert(Alert.AlertType.CONFIRMATION, "¿Cerrar sesión?", ButtonType.CANCEL, ButtonType.OK);
-    a.setHeaderText(null);
-    var res = a.showAndWait();
-    if (res.isPresent() && res.get() == ButtonType.OK) {
-      javafx.application.Platform.exit();
-    }
-    */
-  }
-
-  // ====================== Handlers sidebar ======================
-  // Nota: en MainView.fxml mapeaste “Inicio (Dashboard)” a showClientes.
-  @FXML
-  public void showClientes() {
-    select(navClientes, "Clientes", "Inicio / Clientes");
-    loadIntoCenter("CLIENTES", FXML_DASHBOARD);
-  }
-
-  @FXML
-  public void showPagos() {
-    select(navPagos, "Pagos", "Inicio / Pagos");
-    loadIntoCenter("PAGOS", FXML_PAGOS);
-  }
-
-  @FXML
-  public void showPedidos() {
-    select(navPedidos, "Pedidos", "Inicio / Pedidos");
-    loadIntoCenter("PEDIDOS", FXML_PEDIDOS);
-  }
-
-  @FXML
-  public void showCocina() {
-    select(navCocina, "Cocina", "Inicio / Cocina");
-    loadIntoCenter("COCINA", FXML_COCINA);
-  }
-
-  @FXML
-  public void showProductos() {
-    select(navProductos, "Productos", "Inicio / Productos");
-    loadIntoCenter("PRODUCTOS", FXML_PRODUCTOS);
-  }
-
-  @FXML
-  public void showCategorias() {
-    select(navConfig, "Configuración", "Inicio / Configuración");
-    loadIntoCenter("CATEGORIAS", FXML_CATEGORIAS);
-  }
-
-  // Placeholders (ya declarados en FXML; evitan errores si reasignas onAction)
-  @FXML
-  public void showDashboard() {
-    select(navDashboard, "Inicio (Dashboard)", "Inicio / Dashboard");
-    loadIntoCenter("DASHBOARD", FXML_DASHBOARD);
-  }
-
-  @FXML
-  public void showRegistrar() {
-    select(navRegistrar, "Registrar pedido", "Inicio / Registrar pedido");
-    info("La vista 'Registrar pedido' todavía no está implementada.");
-  }
-
-  @FXML
-  public void showEnvios() {
-    select(navEnvios, "Envíos", "Inicio / Envíos");
-    info("La vista 'Envíos' todavía no está implementada.");
-  }
-
-  @FXML
-  public void showReportes() {
-    select(navReportes, "Reportes", "Inicio / Reportes");
-    info("La vista 'Reportes' todavía no está implementada.");
-  }
-
-  // ====================== Helpers ======================
-  private void select(ToggleButton which, String title, String breadcrumb) {
-    // Des-seleccionar todos y activar el actual
-    if (navDashboard != null) navDashboard.setSelected(false);
-    if (navPagos     != null) navPagos.setSelected(false);
-    if (navPedidos   != null) navPedidos.setSelected(false);
-    if (navRegistrar != null) navRegistrar.setSelected(false);
-    if (navCocina       != null) navCocina.setSelected(false);
-    if (navEnvios    != null) navEnvios.setSelected(false);
-    if (navReportes  != null) navReportes.setSelected(false);
-    if (navClientes  != null) navClientes.setSelected(false);
-    if (navProductos != null) navProductos.setSelected(false);
-    if (navConfig    != null) navConfig.setSelected(false);
-
-    if (which != null) which.setSelected(true);
-    if (lblTitle != null) lblTitle.setText("Pastelería — " + title);
-    if (lblBreadcrumb != null) lblBreadcrumb.setText(breadcrumb);
-  }
-
-private void loadIntoCenter(String key, String resourcePath) {
-  try {
-    Parent view = viewCache.get(key);
-    if (view == null) {
-      URL url = getClass().getResource(resourcePath);
-      if (url == null) throw new IllegalStateException("No se encontró FXML: " + resourcePath);
-      FXMLLoader loader = new FXMLLoader(url);
-      view = loader.load();
-      viewCache.put(key, view);
-    }
-    contentPane.getChildren().setAll(view);
-
-    FadeTransition ft = new FadeTransition(Duration.millis(180), view);
-    ft.setFromValue(0.0);
-    ft.setToValue(1.0);
-    ft.play();
-
-  } catch (Exception ex) {
-    // Log completo a consola
-    ex.printStackTrace();
-
-    // Construir cadena con causas anidadas
-    StringBuilder sb = new StringBuilder();
-    Throwable t = ex;
-    while (t != null) {
-      sb.append(t.getClass().getSimpleName())
-        .append(": ")
-        .append(t.getMessage() == null ? "(sin mensaje)" : t.getMessage())
-        .append("\n");
-      t = t.getCause();
+    // ========== INIT ==========
+    @FXML
+    public void initialize() {
+        // al iniciar, muestro el dashboard real
+        showDashboard();
     }
 
-    new Alert(Alert.AlertType.ERROR,
-        "No se pudo cargar la vista.\n" + resourcePath + "\n\nCausas:\n" + sb.toString()
-    ).showAndWait();
-  }
-}
+    // ========== TOPBAR ==========
+    @FXML
+    private void logout() {
+        // directo
+        javafx.application.Platform.exit();
 
+        // si quieres confirmación, usa esto:
+        /*
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,
+                "¿Cerrar sesión?",
+                ButtonType.CANCEL, ButtonType.OK);
+        a.setHeaderText(null);
+        var res = a.showAndWait();
+        if (res.isPresent() && res.get() == ButtonType.OK) {
+            javafx.application.Platform.exit();
+        }
+        */
+    }
 
-  private static String safeMsg(Throwable t) {
-    String m = (t == null) ? null : t.getMessage();
-    return (m == null || m.isBlank()) ? t.getClass().getName() : m;
-  }
+    // ========== HANDLERS MENU ==========
+    @FXML
+    public void showDashboard() {
+        go(
+            "DASHBOARD",
+            navDashboard,
+            FXML_DASHBOARD,
+            "Dashboard",
+            "Inicio / Dashboard"
+        );
+    }
 
-  private void info(String m) { new Alert(Alert.AlertType.INFORMATION, m, ButtonType.OK).showAndWait(); }
-  private void error(String m) { new Alert(Alert.AlertType.ERROR, m, ButtonType.OK).showAndWait(); }
+    @FXML
+    public void showPagos() {
+        go(
+            "PAGOS",
+            navPagos,
+            FXML_PAGOS,
+            "Pagos",
+            "Inicio / Pagos"
+        );
+    }
+
+    @FXML
+    public void showPedidos() {
+        go(
+            "PEDIDOS",
+            navPedidos,
+            FXML_PEDIDOS,
+            "Pedidos",
+            "Inicio / Pedidos"
+        );
+    }
+
+    @FXML
+    public void showRegistrar() {
+        // por ahora reusa la vista de pedidos
+        go(
+            "REGISTRAR",
+            navRegistrar,
+            FXML_REGISTRAR,
+            "Registrar pedido",
+            "Inicio / Registrar pedido"
+        );
+    }
+
+    @FXML
+    public void showCocina() {
+        go(
+            "COCINA",
+            navCocina,
+            FXML_COCINA,
+            "Cocina",
+            "Inicio / Cocina"
+        );
+    }
+
+    @FXML
+    public void showEnvios() {
+        // por ahora reusa pedidos
+        go(
+            "ENVIOS",
+            navEnvios,
+            FXML_ENVIOS,
+            "Envíos",
+            "Inicio / Envíos"
+        );
+    }
+
+    @FXML
+    public void showReportes() {
+        // por ahora reusa dashboard
+        go(
+            "REPORTES",
+            navReportes,
+            FXML_REPORTES,
+            "Reportes",
+            "Inicio / Reportes"
+        );
+    }
+
+    @FXML
+    public void showClientes() {
+        // usas Categorias.fxml como “Clientes”
+        go(
+            "CLIENTES",               // <-- key distinta
+            navClientes,
+            FXML_CATEGORIAS,
+            "Clientes",
+            "Inicio / Clientes"
+        );
+    }
+
+    @FXML
+    public void showProductos() {
+        go(
+            "PRODUCTOS",
+            navProductos,
+            FXML_PRODUCTOS,
+            "Productos",
+            "Inicio / Productos"
+        );
+    }
+
+    @FXML
+    public void showCategorias() {
+        go(
+            "CATEGORIAS",
+            navConfig,
+            FXML_CATEGORIAS,
+            "Configuración",
+            "Inicio / Configuración / Categorías"
+        );
+    }
+
+    // ========== NÚCLEO DE NAVEGACIÓN ==========
+    private void go(String key,
+                    ToggleButton btn,
+                    String resourcePath,
+                    String title,
+                    String breadcrumb) {
+
+        // 1) marcar botón actual
+        selectOnly(btn);
+
+        // 2) cargar / obtener de cache
+        Parent view = loadView(key, resourcePath);
+        if (view == null) {
+            error("No se pudo cargar la vista: " + resourcePath);
+            return;
+        }
+
+        // 3) ponerlo en el centro
+        contentPane.getChildren().setAll(view);
+
+        // 4) animación
+        FadeTransition ft = new FadeTransition(Duration.millis(160), view);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+
+        // 5) actualizar títulos
+        if (lblTitle != null) {
+            lblTitle.setText("Pastelería — " + title);
+        }
+        if (lblBreadcrumb != null) {
+            lblBreadcrumb.setText(breadcrumb);
+        }
+    }
+
+    private Parent loadView(String key, String resourcePath) {
+        try {
+            if (viewCache.containsKey(key)) {
+                return viewCache.get(key);
+            }
+            URL url = getClass().getResource(resourcePath);
+            if (url == null) {
+                throw new IllegalStateException("No se encontró FXML: " + resourcePath);
+            }
+            FXMLLoader loader = new FXMLLoader(url);
+            Parent view = loader.load();
+            viewCache.put(key, view);
+            return view;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    private void selectOnly(ToggleButton active) {
+        // desactiva todos
+        if (navDashboard != null) navDashboard.setSelected(false);
+        if (navPagos     != null) navPagos.setSelected(false);
+        if (navPedidos   != null) navPedidos.setSelected(false);
+        if (navRegistrar != null) navRegistrar.setSelected(false);
+        if (navCocina    != null) navCocina.setSelected(false);
+        if (navEnvios    != null) navEnvios.setSelected(false);
+        if (navReportes  != null) navReportes.setSelected(false);
+        if (navClientes  != null) navClientes.setSelected(false);
+        if (navProductos != null) navProductos.setSelected(false);
+        if (navConfig    != null) navConfig.setSelected(false);
+
+        // activa el actual
+        if (active != null) active.setSelected(true);
+    }
+
+    // ========== ALERTAS ==========
+    private void error(String m) {
+        new Alert(Alert.AlertType.ERROR, m, ButtonType.OK).showAndWait();
+    }
+
+    @SuppressWarnings("unused")
+    private void info(String m) {
+        new Alert(Alert.AlertType.INFORMATION, m, ButtonType.OK).showAndWait();
+    }
 }

@@ -3,106 +3,138 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Rectangle?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.mycompany.pasteleria.desktop.controller.DashboardController"
       spacing="12" fillWidth="true">
 
-  <padding>
-    <Insets top="16" right="16" bottom="16" left="16"/>
-  </padding>
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
 
-  <!-- ===================== Título + acciones ===================== -->
-  <HBox spacing="8" alignment="CENTER_LEFT">
-    <children>
-      <Label text="Inicio" styleClass="title"/>
-      <Pane HBox.hgrow="ALWAYS"/>
-      <!-- Acciones opcionales del dashboard -->
-      <Button text="Refrescar" fx:id="btnRefrescar" styleClass="btn-ghost"/>
-    </children>
-  </HBox>
-
-  <!-- ===================== KPIs ===================== -->
-  <HBox spacing="12">
-    <children>
-      <!-- Card KPI -->
-      <VBox spacing="6" styleClass="card" VBox.vgrow="NEVER">
+    <!-- TÍTULO -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
         <children>
-          <Label text="Pedidos de hoy" styleClass="label-muted"/>
-          <Label fx:id="lblKpiPedidosHoy" text="0" style="-fx-font-size:20px; -fx-font-weight:700;"/>
-          <Label fx:id="lblKpiPedidosSub" text="" styleClass="label-muted"/>
+            <Label text="Estado de pedidos" styleClass="title"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnRefrescar" text="Refrescar" styleClass="btn-ghost"/>
         </children>
-      </VBox>
+    </HBox>
 
-      <VBox spacing="6" styleClass="card">
-        <children>
-          <Label text="Ventas de hoy (S/.)" styleClass="label-muted"/>
-          <Label fx:id="lblKpiVentasHoy" text="0.00" style="-fx-font-size:20px; -fx-font-weight:700;"/>
-          <Label fx:id="lblKpiVentasSub" text="" styleClass="label-muted"/>
-        </children>
-      </VBox>
+    <!-- TARJETAS DE ESTADO -->
+    <!-- Usamos FlowPane para que se acomoden según el ancho -->
+    <FlowPane fx:id="cardsPane"
+              hgap="12" vgap="12"
+              prefWrapLength="1000">
 
-      <VBox spacing="6" styleClass="card">
-        <children>
-          <Label text="En cocina ahora" styleClass="label-muted"/>
-          <Label fx:id="lblKpiCocina" text="0" style="-fx-font-size:20px; -fx-font-weight:700;"/>
-        </children>
-      </VBox>
-
-      <VBox spacing="6" styleClass="card">
-        <children>
-          <Label text="Por entregar" styleClass="label-muted"/>
-          <Label fx:id="lblKpiPorEntregar" text="0" style="-fx-font-size:20px; -fx-font-weight:700;"/>
-        </children>
-      </VBox>
-      <Pane HBox.hgrow="ALWAYS"/>
-    </children>
-  </HBox>
-
-  <!-- ===================== Zona inferior (Chart + Recientes) ===================== -->
-  <HBox spacing="12" VBox.vgrow="ALWAYS">
-    <children>
-
-      <!-- Panel gráfico (2/3) -->
-      <VBox spacing="8" styleClass="card" HBox.hgrow="ALWAYS">
-        <children>
-          <Label text="Ventas últimos 7 días" style="-fx-font-weight:600;"/>
-          <!-- Contenedor donde el controlador dibuja/inyecta el gráfico -->
-          <StackPane fx:id="pnlChart" prefHeight="260" minHeight="220" maxHeight="480">
+        <!-- EN_REVISION -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
             <children>
-              <!-- Placeholder visual -->
-              <HBox spacing="6" alignment="BOTTOM_LEFT" padding="12">
-                <children>
-                  <!-- 7 barras “dummy”; el controlador puede reemplazar por un Chart o nodos -->
-                  <Rectangle width="24" height="80" styleClass="barchart-bar"/>
-                  <Rectangle width="24" height="110" styleClass="barchart-bar"/>
-                  <Rectangle width="24" height="70" styleClass="barchart-bar"/>
-                  <Rectangle width="24" height="130" styleClass="barchart-bar"/>
-                  <Rectangle width="24" height="150" styleClass="barchart-bar"/>
-                  <Rectangle width="24" height="115" styleClass="barchart-bar"/>
-                  <Rectangle width="24" height="170" styleClass="barchart-bar"/>
-                </children>
-              </HBox>
+                <Label text="EN_REVISION" styleClass="label-muted"/>
+                <Label fx:id="lblEnRevision" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Revisar pago pendiente" styleClass="label-muted"/>
             </children>
-          </StackPane>
-        </children>
-      </VBox>
+        </VBox>
 
-      <!-- Panel “Pedidos recientes” (1/3) -->
-      <VBox spacing="8" styleClass="card" prefWidth="340" minWidth="280" maxWidth="520">
+        <!-- APROBADO -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="APROBADO" styleClass="label-muted"/>
+                <Label fx:id="lblAprobado" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Listo para continuar" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- PAGO_NO_VALIDO -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="PAGO_NO_VALIDO" styleClass="label-muted"/>
+                <Label fx:id="lblPagoNoValido" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Pago observado / rechazado" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- EN_COCINA -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="EN_COCINA" styleClass="label-muted"/>
+                <Label fx:id="lblEnCocina" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="En preparación de receta" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- EN_PREPARACION -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="EN_PREPARACION" styleClass="label-muted"/>
+                <Label fx:id="lblEnPreparacion" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Armado / empaquetado" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- SERVIDO -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="SERVIDO" styleClass="label-muted"/>
+                <Label fx:id="lblServido" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Entregado en salón/mostrador" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- ASIGNADO -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="ASIGNADO" styleClass="label-muted"/>
+                <Label fx:id="lblAsignado" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Con repartidor asignado" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- ENVIADO -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="ENVIADO" styleClass="label-muted"/>
+                <Label fx:id="lblEnviado" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="En ruta al cliente" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- ENTREGADO -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="ENTREGADO" styleClass="label-muted"/>
+                <Label fx:id="lblEntregado" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Pedido completado" styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+        <!-- NO_ENCONTRADO -->
+        <VBox spacing="6" styleClass="card" prefWidth="190" minWidth="170">
+            <children>
+                <Label text="NO_ENCONTRADO" styleClass="label-muted"/>
+                <Label fx:id="lblNoEncontrado" text="0"
+                       style="-fx-font-size:22px; -fx-font-weight:700;"/>
+                <Label text="Dirección / cliente no ubic." styleClass="label-muted"/>
+            </children>
+        </VBox>
+
+    </FlowPane>
+
+    <!-- loader flotante opcional -->
+    <StackPane fx:id="overlayPane" VBox.vgrow="ALWAYS" prefHeight="0">
         <children>
-          <Label text="Pedidos recientes" style="-fx-font-weight:600;"/>
-          <ListView fx:id="lvRecientes" prefHeight="260">
-            <placeholder>
-              <Label text="Sin pedidos recientes"/>
-            </placeholder>
-          </ListView>
+            <ProgressIndicator fx:id="loader" visible="false" maxWidth="60" maxHeight="60"
+                               StackPane.alignment="CENTER"/>
         </children>
-      </VBox>
-
-    </children>
-  </HBox>
+    </StackPane>
 
 </VBox>
-

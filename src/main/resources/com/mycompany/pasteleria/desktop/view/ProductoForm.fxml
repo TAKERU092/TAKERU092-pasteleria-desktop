@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<!-- RUTA: src/main/resources/com/mycompany/pasteleria/desktop/view/ProductoForm.fxml -->
+<GridPane xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.mycompany.pasteleria.desktop.controller.ProductoFormController"
+          hgap="10" vgap="10">
+  <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+  <columnConstraints>
+    <ColumnConstraints minWidth="140"/>
+    <ColumnConstraints hgrow="ALWAYS" minWidth="260"/>
+  </columnConstraints>
+
+  <children>
+    <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Categoría:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="cbCategoria" prefWidth="260" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Precio (S/):" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtPrecio" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Stock:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtStock" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Estado:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="cbEstado" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Imagen URL:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <TextField fx:id="txtImagen" GridPane.rowIndex="5" GridPane.columnIndex="1" promptText="https://..."/>
+
+    <Label text="Descripción:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <TextArea fx:id="txtDescripcion" GridPane.rowIndex="6" GridPane.columnIndex="1" prefRowCount="4" wrapText="true"/>
+
+    <Label fx:id="lblError" textFill="red" GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+  </children>
+</GridPane>

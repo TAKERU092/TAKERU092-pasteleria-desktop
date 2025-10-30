@@ -9,6 +9,7 @@
             fx:controller="com.mycompany.pasteleria.desktop.controller.ShellController"
             prefWidth="1200" prefHeight="720">
 
+  <!-- ========== TOPBAR ========== -->
   <top>
     <HBox spacing="12" styleClass="topbar" prefHeight="64" minHeight="64" maxHeight="64">
       <children>
@@ -24,8 +25,12 @@
     </HBox>
   </top>
 
+  <!-- ========== SIDEBAR ========== -->
   <left>
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="sidebar-scroll">
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                styleClass="sidebar-scroll">
       <content>
         <VBox spacing="6" styleClass="sidebar" prefWidth="256" minWidth="256" maxWidth="256">
           <padding><Insets top="16" right="12" bottom="16" left="12"/></padding>
@@ -35,38 +40,85 @@
           </fx:define>
 
           <children>
-            <ToggleButton fx:id="navDashboard" text="Inicio (Dashboard)" toggleGroup="$navGroup"
-                          onAction="#showClientes" selected="true" styleClass="navbtn"/>
+            <!-- AHORA SÍ llama al dashboard real -->
+            <ToggleButton fx:id="navDashboard"
+                          text="Inicio (Dashboard)"
+                          toggleGroup="$navGroup"
+                          onAction="#showDashboard"
+                          selected="true"
+                          styleClass="navbtn"/>
 
-            <!-- NUEVO: Pagos -->
-            <ToggleButton fx:id="navPagos" text="Pagos" toggleGroup="$navGroup"
-                          onAction="#showPagos" styleClass="navbtn"/>
+            <!-- Pagos -->
+            <ToggleButton fx:id="navPagos"
+                          text="Pagos"
+                          toggleGroup="$navGroup"
+                          onAction="#showPagos"
+                          styleClass="navbtn"/>
 
-            <ToggleButton fx:id="navPedidos" text="Pedidos" toggleGroup="$navGroup"
-                          onAction="#showPedidos" styleClass="navbtn"/>
-            <ToggleButton fx:id="navRegistrar" text="Registrar pedido" toggleGroup="$navGroup"
-                          onAction="#showPedidos" styleClass="navbtn"/>
-            <ToggleButton fx:id="navCocina" text="Cocina" toggleGroup="$navGroup"
-                          onAction="#showCocina" styleClass="navbtn"/>
-            <ToggleButton fx:id="navEnvios" text="Envíos" toggleGroup="$navGroup"
-                          onAction="#showPedidos" styleClass="navbtn"/>
-            <ToggleButton fx:id="navReportes" text="Reportes" toggleGroup="$navGroup"
-                          onAction="#showProductos" styleClass="navbtn"/>
+            <!-- Pedidos -->
+            <ToggleButton fx:id="navPedidos"
+                          text="Pedidos"
+                          toggleGroup="$navGroup"
+                          onAction="#showPedidos"
+                          styleClass="navbtn"/>
+
+            <!-- Registrar pedido: AHORA sí llama a showRegistrar -->
+            <ToggleButton fx:id="navRegistrar"
+                          text="Registrar pedido"
+                          toggleGroup="$navGroup"
+                          onAction="#showRegistrar"
+                          styleClass="navbtn"/>
+
+            <!-- Cocina -->
+            <ToggleButton fx:id="navCocina"
+                          text="Cocina"
+                          toggleGroup="$navGroup"
+                          onAction="#showCocina"
+                          styleClass="navbtn"/>
+
+            <!-- Envíos: AHORA sí llama a showEnvios -->
+            <ToggleButton fx:id="navEnvios"
+                          text="Envíos"
+                          toggleGroup="$navGroup"
+                          onAction="#showEnvios"
+                          styleClass="navbtn"/>
+
+            <!-- Reportes: AHORA sí llama a showReportes -->
+            <ToggleButton fx:id="navReportes"
+                          text="Reportes"
+                          toggleGroup="$navGroup"
+                          onAction="#showReportes"
+                          styleClass="navbtn"/>
 
             <Separator/>
 
-            <ToggleButton fx:id="navClientes" text="Clientes" toggleGroup="$navGroup"
-                          onAction="#showClientes" styleClass="navbtn"/>
-            <ToggleButton fx:id="navProductos" text="Productos" toggleGroup="$navGroup"
-                          onAction="#showProductos" styleClass="navbtn"/>
-            <ToggleButton fx:id="navConfig" text="Configuración" toggleGroup="$navGroup"
-                          onAction="#showCategorias" styleClass="navbtn"/>
+            <!-- Clientes -->
+            <ToggleButton fx:id="navClientes"
+                          text="Clientes"
+                          toggleGroup="$navGroup"
+                          onAction="#showClientes"
+                          styleClass="navbtn"/>
+
+            <!-- Productos -->
+            <ToggleButton fx:id="navProductos"
+                          text="Productos"
+                          toggleGroup="$navGroup"
+                          onAction="#showProductos"
+                          styleClass="navbtn"/>
+
+            <!-- Configuración -> Categorías -->
+            <ToggleButton fx:id="navConfig"
+                          text="Configuración"
+                          toggleGroup="$navGroup"
+                          onAction="#showCategorias"
+                          styleClass="navbtn"/>
           </children>
         </VBox>
       </content>
     </ScrollPane>
   </left>
 
+  <!-- ========== CONTENIDO CENTRAL ========== -->
   <center>
     <StackPane fx:id="contentPane" styleClass="content">
       <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>

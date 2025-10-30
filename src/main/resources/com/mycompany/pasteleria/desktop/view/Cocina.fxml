@@ -21,18 +21,27 @@
         </children>
       </HBox>
 
-      <!-- Split responsivo (sin porcentaje fijo) -->
-      <SplitPane>
+      <!-- SplitPane
+           - dividerPositions ~0.28: al iniciar ~300 px a la izquierda (1 columna).
+           - Izquierda crece hasta 2 columnas máx (~560 px).
+           - Derecha usa todo el resto con scroll vertical. -->
+      <SplitPane dividerPositions="0.28">
         <items>
 
-          <!-- IZQ: Tarjetas (mínimo 1 card completa; si hay espacio, caben 2 por fila) -->
-          <VBox fx:id="leftPane" spacing="8" minWidth="272"> <!-- 260 card + 12 hgap -->
+          <!-- IZQ: Tarjetas -->
+          <VBox fx:id="leftPane" spacing="8"
+                minWidth="272" prefWidth="300" maxWidth="560"
+                VBox.vgrow="ALWAYS">
             <children>
               <Label text="Pedidos en cocina" style="-fx-font-weight:600;"/>
               <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                 <content>
-                  <!-- TilePane con anchura de tile fija a 260; gap 12 para “respirar” -->
-                  <TilePane fx:id="grid" hgap="12" vgap="12">
+                  <!-- OJO: quitamos prefTileHeight -->
+                  <TilePane fx:id="grid"
+                            hgap="12" vgap="12"
+                            prefColumns="2"
+                            prefTileWidth="260"
+                            tileAlignment="TOP_LEFT">
                     <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
                   </TilePane>
                 </content>
@@ -41,72 +50,81 @@
           </VBox>
 
           <!-- DER: Resumen + Detalle -->
-          <VBox spacing="12">
+          <ScrollPane fitToWidth="true"
+                      hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                      minWidth="320">
+            <content>
+              <VBox spacing="12" fillWidth="true">
 
-            <!-- Resumen -->
-            <VBox spacing="10" styleClass="card">
-              <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-              <children>
-                <GridPane hgap="12" vgap="6">
-                  <columnConstraints>
-                    <ColumnConstraints minWidth="120"/>
-                    <ColumnConstraints minWidth="200" hgrow="ALWAYS"/>
-                    <ColumnConstraints minWidth="110"/>
-                    <ColumnConstraints minWidth="200" hgrow="ALWAYS"/>
-                  </columnConstraints>
+                <!-- Resumen -->
+                <VBox spacing="10" styleClass="card">
+                  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
                   <children>
-                    <Label text="Pedido:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <Label fx:id="lblPedido" style="-fx-font-weight:700;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <!-- Grid responsivo: porcentajes con mínimos bajos -->
+                    <GridPane hgap="12" vgap="6">
+                      <columnConstraints>
+                        <ColumnConstraints percentWidth="26" minWidth="60"/>
+                        <ColumnConstraints percentWidth="24" minWidth="80" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="26" minWidth="60"/>
+                        <ColumnConstraints percentWidth="24" minWidth="80" hgrow="ALWAYS"/>
+                      </columnConstraints>
+                      <children>
+                        <Label text="Pedido:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <Label fx:id="lblPedido" style="-fx-font-weight:700;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-                    <Label text="Estado:" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-                    <Label fx:id="lblEstado" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                        <Label text="Estado:" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <Label fx:id="lblEstado" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
 
-                    <Label text="Cliente:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <Label fx:id="lblCliente" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <Label text="Cliente:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <Label fx:id="lblCliente" wrapText="true" maxWidth="Infinity"
+                               GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                    <Label text="Fecha pedido:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <Label fx:id="lblFecPed" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <Label text="Fecha pedido:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <Label fx:id="lblFecPed" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                    <Label text="Fecha entrega:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-                    <Label fx:id="lblFecEnt" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+                        <Label text="Fecha entrega:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                        <Label fx:id="lblFecEnt" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
 
-                    <Label text="Hora entrega:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <Label fx:id="lblHorEnt" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <Label text="Hora entrega:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <Label fx:id="lblHorEnt" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                      </children>
+                    </GridPane>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                      <children>
+                        <Label text="Acciones:" styleClass="label-muted"/>
+                        <Button fx:id="btnEnPrep"  text="En preparación" onAction="#toEnPreparacion" styleClass="btn-info"/>
+                        <Button fx:id="btnServido" text="Servido"         onAction="#toServido"       styleClass="btn-success"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Label text="Total:" styleClass="label-muted"/>
+                        <Label fx:id="lblTotalPedido" style="-fx-font-weight:700;"/>
+                      </children>
+                    </HBox>
+
+                    <Label text="Comentarios" styleClass="label-muted"/>
+                    <TextArea fx:id="txtComentarios" editable="false" wrapText="true" prefRowCount="3"/>
                   </children>
-                </GridPane>
+                </VBox>
 
-                <HBox spacing="8" alignment="CENTER_LEFT">
+                <!-- Detalle (SOLO 2 columnas) -->
+                <VBox spacing="8" styleClass="card" VBox.vgrow="ALWAYS">
+                  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
                   <children>
-                    <Label text="Acciones:" styleClass="label-muted"/>
-                    <Button fx:id="btnEnPrep"  text="En preparación" onAction="#toEnPreparacion" styleClass="btn-info"/>
-                    <Button fx:id="btnServido" text="Servido"         onAction="#toServido"       styleClass="btn-success"/>
-                    <Pane HBox.hgrow="ALWAYS"/>
-                    <Label text="Total:" styleClass="label-muted"/>
-                    <Label fx:id="lblTotalPedido" style="-fx-font-weight:700;"/>
+                    <Label text="Detalle" style="-fx-font-weight:600;"/>
+                    <TableView fx:id="tblDetalle" VBox.vgrow="ALWAYS">
+                      <columns>
+                        <TableColumn fx:id="colProd" text="Producto"/>
+                        <TableColumn fx:id="colCant" text="Cant." styleClass="align-center" prefWidth="120"/>
+                      </columns>
+                      <placeholder><Label text="Selecciona un pedido para ver su detalle."/></placeholder>
+                    </TableView>
                   </children>
-                </HBox>
+                </VBox>
 
-                <Label text="Comentarios" styleClass="label-muted"/>
-                <TextArea fx:id="txtComentarios" editable="false" wrapText="true" prefRowCount="3"/>
-              </children>
-            </VBox>
+              </VBox>
+            </content>
+          </ScrollPane>
 
-            <!-- Detalle (SOLO 2 columnas) -->
-            <VBox spacing="8" styleClass="card" VBox.vgrow="ALWAYS">
-              <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-              <children>
-                <Label text="Detalle" style="-fx-font-weight:600;"/>
-                <TableView fx:id="tblDetalle" VBox.vgrow="ALWAYS">
-                  <columns>
-                    <TableColumn fx:id="colProd" text="Producto"/>
-                    <TableColumn fx:id="colCant" text="Cant." styleClass="align-center" prefWidth="120"/>
-                  </columns>
-                  <placeholder><Label text="Selecciona un pedido para ver su detalle."/></placeholder>
-                </TableView>
-              </children>
-            </VBox>
-
-          </VBox>
         </items>
       </SplitPane>
     </VBox>
@@ -121,4 +139,3 @@
 
   </children>
 </StackPane>
-

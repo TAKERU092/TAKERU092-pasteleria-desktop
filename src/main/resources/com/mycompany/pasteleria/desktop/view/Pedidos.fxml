@@ -7,7 +7,9 @@
       fx:controller="com.mycompany.pasteleria.desktop.controller.PedidosController"
       spacing="12" fillWidth="true">
 
-  <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+  <padding>
+    <Insets top="12" right="12" bottom="12" left="12"/>
+  </padding>
 
   <!-- Topbar: título + buscar + MULTIFILTRO estados -->
   <HBox spacing="8" alignment="CENTER_LEFT">
@@ -15,8 +17,7 @@
       <Label text="Pedidos" style="-fx-font-size:16; -fx-font-weight:700;"/>
       <Pane HBox.hgrow="ALWAYS"/>
       <TextField fx:id="txtBuscar" promptText="Buscar N° o cliente..." prefWidth="280"/>
-      <!-- Botón de menú con check múltiples para estados -->
-      <MenuButton fx:id="btnEstados" text="Filtrar estados" mnemonicParsing="false" />
+      <MenuButton fx:id="btnEstados" text="Filtrar estados" mnemonicParsing="false"/>
       <Button fx:id="btnBuscar" text="Buscar" onAction="#buscar"/>
       <Button fx:id="btnRefrescar" text="Refrescar" onAction="#refrescar"/>
     </children>
@@ -42,10 +43,10 @@
 
       <!-- Overlay de carga -->
       <Region visible="${loader.visible}" mouseTransparent="false"
-              style="-fx-background-color: rgba(0,0,0,0.06);" />
+              style="-fx-background-color: rgba(0,0,0,0.06);"/>
       <ProgressIndicator fx:id="loader" visible="false"
-                         maxWidth="80" maxHeight="80" StackPane.alignment="CENTER"/>
-
+                         maxWidth="80" maxHeight="80"
+                         StackPane.alignment="CENTER"/>
     </children>
   </StackPane>
 
